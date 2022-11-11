@@ -44,7 +44,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+//app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 
 // .get for various pages
