@@ -27,7 +27,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/about', aboutRouter);
 
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
