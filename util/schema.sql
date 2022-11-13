@@ -42,7 +42,7 @@ INSERT INTO vehicles VALUES
 INSERT INTO vehicles VALUES
   ('B7720',2020,'Toyota','Highlander','Grey','5TDGZRBH5LS016952',62317,'available');
 INSERT INTO vehicles VALUES
-  ('B7729',2019'Toyota','Highlander','Black','5TDJZRFH1KS580063',68415,'available');
+  ('B7729',2019,'Toyota','Highlander','Black','5TDJZRFH1KS580063',68415,'available');
 INSERT INTO vehicles VALUES
   ('B7744',2018,'Toyota','Highlander','Brown','5TDDZRFH2JS496779',49008,'available');
 INSERT INTO vehicles VALUES
