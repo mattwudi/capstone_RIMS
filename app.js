@@ -4,7 +4,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const {Pool} = require('pg');
 
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 
 var expressLayouts = require('express-ejs-layouts');
@@ -14,6 +21,8 @@ const PORT = process.env.PORT || 5163;
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var aboutRouter = require('./routes/about');
+var createRouter = require('./routes/create');
+var returnRouter = require('./routes/return');
 var app = express();
 
 // view engine setup
@@ -29,6 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/about', aboutRouter);
+app.use('/create', createRouter);
+app.use('/return', returnRouter);
 
 
 // catch 404 and forward to error handler
