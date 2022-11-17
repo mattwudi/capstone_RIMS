@@ -19,6 +19,33 @@
             <%= b.name %>
         </button>
     <% }); %>
+    <div>
+      <table id = "vehicleTable" border="1px solid black"
+      padding="3px">
+        <tr>
+          <th>Stock Number</th>
+          <th>Year</th>
+          <th>Make</th>
+          <th>Model</th>
+          <th>Color</th>
+          <th>VIN</th>
+          <th>Mileage</th>
+          <th>Status</th>
+        </tr>
+         <% vehicles.forEach(function(v) { %>
+          <tr>
+            <td><%= v.stock_number %></td>
+            <td><%= v.year %></td>
+            <td><%= v.make %></td>
+            <td><%= v.model %></td>
+            <td><%= v.color %></td>
+            <td><%= v.vin %></td>
+            <td><%= v.mileage %></td>
+            <td><%= v.status %></td>
+          </tr>
+      <% }); %> 
+      </table>
+    </div>
   </div>
   <p id="output"></p>
 </main>

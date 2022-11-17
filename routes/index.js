@@ -14,9 +14,15 @@ router.get('/', async (req, res) => {
     try {
         const client = await pool.connect();
         const buttons = await client.query(buttonSql);
+
+        //Query database for vehicles
+        const vehicleSql = "SELECT * FROM vehicles ORDER BY stock_number ASC;";
+        const vehicles = await client.query(vehicleSql);
+
         const args = {
             title: 'Express',
-            "buttons": buttons ? buttons.rows : null 
+            "buttons": buttons ? buttons.rows : null,
+            "vehicles": vehicles.rows
         }
         res.render('pages/index', args);
     } catch (err) {
