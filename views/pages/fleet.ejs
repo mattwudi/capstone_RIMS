@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<main>
+  <div class="jumbotron">
+    <h1>This is the Fleet page</h1>
+    <label for="vDropdown" id="vDropdownLbl">Vehicle: </label>
+  </div>
+    <p id="output"></p>
+</main>
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+<script>
+    let fleetArray = [];
+
+    <% for (let i = 0; i < fleet.length; i++) { %>
+        fleetArray.push({
+            'stock_number': "<%= fleet[i].stock_number %>",
+            'year': <%= fleet[i].year %>,
+            'make': "<%= fleet[i].make %>",
+            'model': "<%= fleet[i].model %>",
+            'color': "<%= fleet[i].color %>",
+            'vin': "<%= fleet[i].vin %>",
+            'mileage': <%= fleet[i].mileage %>,
+            'status': "<%= fleet[i].status %>"
+        });
+    <% } %>
+
+        function vehicleDropdown() {
+            let select = document.createElement("select");
+            select.required = true;
+            select.title = "Vehicle Dropdown";
+            select.name = "Vehicle Dropdown";
+            select.id = "vDropdown";
+            let option = document.createElement("option");
+            option.value = "addVehicle";
+            option.id = "add";
+            option.text = "Add a New Vehicle...";
+            select.appendChild(option);
+
+            fleetArray.forEach(function (fa) {
+                option = document.createElement("option");
+                option.value = fa.stock_number;
+                option.id = `v${fleetArray.findIndex((obj) => { return obj.stock_number === fa.stock_number })}`;
+                option.text = `${fa.stock_number} - ${fa.year} ${fa.make} ${fa.model}: ${fa.color}`;
+                select.appendChild(option);
+            });
+
+            const selectOld = document.getElementById("vDropdown");
+            if (selectOld) {
+                let oldValue = document.getElementById("vDropdown").value;
+                const parentNode = selectOld.parentNode;
+                parentNode.replaceChild(select, selectOld);
+                document.getElementById("vDropdown").value = oldValue;
+            } else {
+                document.getElementById("vDropdownLbl").appendChild(select);
+            }
+        }
+    vehicleDropdown();
+
+    document.getElementById("vDropdown").addEventListener('change', function () {
+        if (this.value !== 'addVehicle') {
+            let idx = fleetArray.findIndex((obj) => { return obj.stock_number === this.value });
+            output.innerHTML = JSON.stringify(fleetArray[idx], null, 6)
+                .replace(/\n( *)/g, function (match, p1) {
+                    return '<br>' + '&nbsp;'.repeat(p1.length);
+                });
+        }
+    });
+</script>
+</body>
+</html>
