@@ -19,7 +19,17 @@
             <%= b.name %>
         </button>
     <% }); %>
+    <!--Button to vehicle report-->
     <br><button id="vReportButton">Vehicle Report</button>
+    <!--Availability dropdown-->
+    <div>
+      <label>Vehicle availability</label>
+      <select id="availabilityDropdown" oninput="statusFilter()">
+        <option>Any</option>
+        <option>Available</option> <!--Changed to upper case in database since it's written like that-->
+        <option>Unavailable</option> <!--Name can be changed depending on future decisions-->
+      </select>
+    </div>
     <div>
       <table id = "vehicleTable" border="1px solid black">
         <tr>
@@ -50,8 +60,27 @@
   <p id="output"></p>
 </main>
 <script type ="text/javascript">
+  //Link button to vehicle report
   document.getElementById("vReportButton").onclick = function() {
     location.href = "vehiclereport";
+  };
+  //Dropdown function to sort table
+  function statusFilter() {
+  let input, table, tr, filter, td, status;
+  input = document.getElementById("availabilityDropdown");
+  table = document.getElementById("vehicleTable");
+  tr = table.getElementsByTagName("tr");
+  filter = input.value;
+
+  for (let row of tr) {
+    td = row.getElementsByTagName("td");
+    status = td[7] || null;
+    if (filter === "Any" || !status || (filter === status.textContent)) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    }       
   };
 </script>
 <script>
