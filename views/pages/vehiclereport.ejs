@@ -11,19 +11,8 @@
 
 <main>
   <div class="jumbotron">
-    <h1>Welcome to RIMS</h1>
-    <p>This is our home page</p>
-    <p>Buttons to test database functionallity:</p>
-  </div>
-  <p id="output"></p>
-</main>
-    <% buttons.forEach(function(b) { %>
-        <button id="<%= b.id %>" onclick="javascript: send(<%= b.id %>);">
-            <%= b.name %>
-        </button>
-    <% }); %>
-    <!--Button to vehicle report-->
-    <br><button id="vReportButton">Vehicle Report</button>
+    <h1>Vehicle Report</h1>
+    
     <!--Availability dropdown-->
     <div>
       <label>Vehicle availability</label>
@@ -33,6 +22,7 @@
         <option>Unavailable</option> <!--Name can be changed depending on future decisions-->
       </select>
     </div>
+    <p>Current status of vehicles:</p>
     <div>
       <table id = "vehicleTable" border="1px solid black">
         <tr>
@@ -63,28 +53,24 @@
   <p id="output"></p>
 </main>
 <script type ="text/javascript">
-  //Link button to vehicle report
-  document.getElementById("vReportButton").onclick = function() {
-    location.href = "vehiclereport";
-  };
-  //Dropdown function to sort table
-  function statusFilter() {
-  let input, table, tr, filter, td, status;
-  input = document.getElementById("availabilityDropdown");
-  table = document.getElementById("vehicleTable");
-  tr = table.getElementsByTagName("tr");
-  filter = input.value;
+//Dropdown function to sort table
+function statusFilter() {
+let input, table, tr, filter, td, status;
+input = document.getElementById("availabilityDropdown");
+table = document.getElementById("vehicleTable");
+tr = table.getElementsByTagName("tr");
+filter = input.value;
 
-  for (let row of tr) {
-    td = row.getElementsByTagName("td");
-    status = td[7] || null;
-    if (filter === "Any" || !status || (filter === status.textContent)) {
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
-    }       
-  };
+for (let row of tr) {
+  td = row.getElementsByTagName("td");
+  status = td[7] || null;
+  if (filter === "Any" || !status || (filter === status.textContent)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  }       
+};
 </script>
 <script>
     const output = document.getElementById("output");

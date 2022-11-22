@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<main>
+  <div class="jumbotron">
+    <h1>This is the Fleet modification page</h1><br>
+    <p>This page is used to locate, update, add or delete a vehicle in our inventory.</p><br>
+    <label for="vDropdown" id="vDropdownLbl">Vehicle: </label>
+  </div>
+  <div class="vForm">
+      <form id="vForm">
+          <label for="stock_number">Stock Number: </label>
+          <input type="text" id="stock_number" class="submitValue" name="stockNum" onkeypress="return AvoidSpace(event)" value="">
+          <label for="year">Year: </label>
+          <input type="text" id="year" class="submitValue" name="year" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
+                 minlength="4" maxlength="4" value=""><br><br>
+          <label for="make">Make: </label>
+          <input type="text" id="make" class="submitValue" name="make" value="">
+          <label for="model">Model: </label>
+          <input type="text" id="model" class="submitValue" name="model" value="">
+          <label for="color">Color: </label>
+          <input type="text" id="color" class="submitValue" name="color" value=""><br><br>
+          <label for="vin">VIN: </label>
+          <input type="text" id="vin" class="submitValue" name="vin" maxlength="17" onkeypress="return AvoidSpace(event)" value="">
+          <label for="mileage">Mileage: </label>
+          <input type="text" id="mileage" class="submitValue" name="mileage" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
+                 value=""><br><br>
+          <label for="status" id="statusLbl">Status: </label>
+          <br><br>
+          <button type="button" onclick="javascript: send();">Submit</button>
+          <button type="button" onclick="javascript: edtForm();">Edit</button>
+          <button type="button" onclick="javascript: delRecord();">Delete Record</button>
+
+      </form>
+  </div>
+    <p id="output"></p>
+</main>
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+<script>
+    let fleetArray = [];
+    const output = document.getElementById("output");
+
+    const updateFleetArray = async function () {
+        if (fleetArray.length) {
+            fleetArray = [];
+        }
+        <% for (let i = 0; i < fleet.length; i++) { %>
+            fleetArray.push({
+                'stock_number': "<%= fleet[i].stock_number %>",
+                'year': <%= fleet[i].year %>,
+                'make': "<%= fleet[i].make %>",
+                'model': "<%= fleet[i].model %>",
+                'color': "<%= fleet[i].color %>",
+                'vin': "<%= fleet[i].vin %>",
+                'mileage': <%= fleet[i].mileage %>,
+                'status': "<%= fleet[i].status %>"
+            });
+        <% } %>
+    };
+    updateFleetArray();
+
+    function populateDropdown() {
+        let select = document.createElement("select");
+        select.required = true;
+        select.title = "Vehicle Dropdown";
+        select.name = "Vehicle Dropdown";
+        select.id = "vDropdown";
+        let option = document.createElement("option");
+        option.value = "addVehicle";
+        option.id = "add";
+        option.text = "Add a New Vehicle...";
+        select.appendChild(option);
+
+        fleetArray.forEach(function (fa) {
+            option = document.createElement("option");
+            option.value = fa.stock_number;
+            option.id = `v${fleetArray.findIndex((obj) => { return obj.stock_number === fa.stock_number })}`;
+            option.text = `${fa.stock_number} - ${fa.year} ${fa.make} ${fa.model}: ${fa.color}`;
+            select.appendChild(option);
+        });
+
+        let selectOld = document.getElementById("vDropdown");
+        if (selectOld) {
+            let oldValue = document.getElementById("vDropdown").value;
+            const parentNode = selectOld.parentNode;
+            parentNode.replaceChild(select, selectOld);
+            document.getElementById("vDropdown").value = oldValue;
+        } else {
+            document.getElementById("vDropdownLbl").appendChild(select);
+        }
+
+        select = document.createElement("select");
+        select.required = true;
+        select.title = "status";
+        select.name = "status";
+        select.id = "status";
+        select.className = "submitValue";
+        option = document.createElement("option");
+        option.value = "available";
+        option.id = "status0";
+        option.text = "Available";
+        select.appendChild(option);
+        option = document.createElement("option");
+        option.value = "loaned";
+        option.id = "status1";
+        option.text = "Loaned Out";
+        select.appendChild(option);
+        option = document.createElement("option");
+        option.value = "repair";
+        option.id = "status2";
+        option.text = "Repairing";
+        select.appendChild(option);
+        option = document.createElement("option");
+        option.value = "decommission";
+        option.id = "status3";
+        option.text = "Decommissioned";
+        select.appendChild(option);
+
+        selectOld = document.getElementById("status");
+        if (selectOld) {
+            let oldValue = selectOld.value;
+            const parentNode = selectOld.parentNode;
+            parentNode.replaceChild(select, selectOld);
+            document.getElementById("status").value = oldValue;
+        } else {
+            document.getElementById("statusLbl").appendChild(select);
+        }
+
+    };
+    populateDropdown();
+
+    document.getElementById("vDropdown").addEventListener('change', function () {
+        if (this.value !== 'addVehicle') {
+            let idx = fleetArray.findIndex((obj) => { return obj.stock_number === this.value });
+            const elementIds = document.getElementById('vForm').querySelectorAll("*[id]");
+            for (let i = 0; i < elementIds.length; i++) {
+                if (elementIds[i].tagName !== 'SELECT' && elementIds[i].tagName !== 'LABEL' && elementIds[i].tagName !== 'OPTION') {
+                    document.getElementById(elementIds[i].id).value = fleetArray[idx][elementIds[i].id];
+                    document.getElementById(elementIds[i].id).setAttribute('readonly', true);
+                    document.getElementById(elementIds[i].id).style.backgroundColor = "#CCCCCC";
+                } else if (elementIds[i].tagName === 'OPTION' && elementIds[i].value === fleetArray[idx].status) {
+                    document.getElementById("status").value = fleetArray[idx].status;
+                    document.getElementById("status").setAttribute('disabled', 'true');
+                    document.getElementById("status").style.backgroundColor = "#CCCCCC";
+                }
+            }
+        } else {
+            const elementIds = document.getElementsByClassName("submitValue");
+            for (let i = 0; i < elementIds.length; i++) {
+                if (elementIds[i].tagName !== 'SELECT') {
+                    document.getElementById(elementIds[i].id).value = null;
+                    document.getElementById(elementIds[i].id).style.backgroundColor = null;
+                } else {
+                    document.getElementById(elementIds[i].id).value = 'available';
+                    document.getElementById(elementIds[i].id).style.backgroundColor = null;
+                    document.getElementById("status").removeAttribute('disabled');
+                }
+            }
+        }
+    });
+
+    const edtForm = async function () {
+        const editForm = document.getElementById("vDropdown");
+        if (editForm.value !== 'addVehicle') {
+            let idx = fleetArray.findIndex((obj) => { return obj.stock_number === editForm.value });
+            const elementIds = document.getElementById('vForm').querySelectorAll("*[id]");
+
+            for (let i = 0; i < elementIds.length; i++) {
+                if (elementIds[i].tagName !== 'SELECT' && elementIds[i].tagName !== 'LABEL' && elementIds[i].tagName !== 'OPTION') {
+                    document.getElementById(elementIds[i].id).removeAttribute('readonly');
+                    document.getElementById(elementIds[i].id).style.backgroundColor = null;
+                } else if (elementIds[i].tagName === 'OPTION' && elementIds[i].value === fleetArray[idx].status) {
+                    document.getElementById("status").removeAttribute('disabled');
+                    document.getElementById("status").style.backgroundColor = null;
+
+                }
+                
+            }
+
+        }
+    };
+
+    const verifyInput = async function () {
+        let dataValid = true;
+        const elementIds = document.getElementsByClassName("submitValue");
+        for (let i = 0; i < elementIds.length; i++) {
+            let elementId = document.getElementById(elementIds[i].id);
+            let elementValue = elementId.value.trim();
+            if (elementValue === '' || elementValue === null) {
+                elementId.style.backgroundColor = "#ff6666";
+                dataValid = false;
+            } else {
+                elementId.style.backgroundColor = null;
+            }
+        }
+        if (!dataValid) {
+            alert("Please fill out all fields!");
+        } 
+        return dataValid;
+    };
+
+    const send = async function () {
+        const dataValid = await verifyInput();
+        const bodyObj = {};
+        const elementIds = document.getElementsByClassName("submitValue");
+        for (let i = 0; i < elementIds.length; i++) {
+            Object.assign(bodyObj, { [elementIds[i].id]: elementIds[i].value });
+        }
+        if (dataValid) {
+            const response = await fetch("/fleet", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(bodyObj)
+            });
+            const result = await response.json();
+
+            if (result.error) {
+                if (result.error == 'Update') {
+                    output.innerHTML = `<strong>ERROR: Unable to update current record, Reason: ${result.msg.routine}</strong>`;
+                } else if (result.error == 'Insert') {
+                    output.innerHTML = `<strong>ERROR: Unable to insert record ${result.stock_number}, Reason: ${result.msg.routine}</strong>`;
+                } else {
+                    output.innerHTML = `<strong>ERROR: Unable to connect to database. Reason: ${result.msg.routine}</strong>`;
+                }  
+            } else {
+                if (result.status == 'Updated') {
+                    alert(`${result.stock_number} has been updated.`);
+                } else {
+                    alert(`${result.stock_number} has been added to the fleet.`);
+                }
+                location.reload();
+                //output.innerHTML = JSON.stringify(result, null, 6)
+                //    .replace(/\n( *)/g, function (match, p1) {
+                //        return '<br>' + '&nbsp;'.repeat(p1.length);
+                //    });
+            } 
+        } 
+    };
+
+    const delRecord = async function () {
+        const dataValid = await verifyInput();
+        if (dataValid) {
+            const confirmDel = confirm("Are you sure you want to delete this record?");
+            if (confirmDel) {
+                const response = await fetch("/fleet", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ 'stock_number': document.getElementById('stock_number').value, 'request': 'delete' })
+                });
+                const result = await response.json();
+
+                if (result.error) {
+                    output.innerHTML = `<strong>ERROR: Unable to delete record ${result.stock_number} from the database. Reason: ${result.msg.routine}</strong>`;
+                } else if (result.status == 'Deleted') {
+                    alert(`Record ${result.stock_number} has been deleted!`);
+                    location.reload();
+                } else {
+                    output.innerHTML = `<strong>ERROR: Record ${result.stock_number} does not exist.</strong>`;
+                }
+            }
+        }
+    };
+
+    function AvoidSpace(event) {
+        var k = event ? event.which : window.event.keyCode;
+        if (k == 32) return false;
+    }
+</script>
+</body>
+</html>
