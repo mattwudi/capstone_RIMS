@@ -3,6 +3,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var logger = require('morgan');
 var { Pool } = require("pg");
 var bcrypt = require('bcrypt');
@@ -10,6 +11,30 @@ var session = require('express-session');
 var flash = require('express-flash');
 var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
+const vehicleSelectQry = `SELECT * FROM VEHICLES ORDER BY YEAR ASC;`;
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
+var fleet;
+
+startupDataLoad = async function() {
+    try {
+        const client = await pool.connect();
+        fleet = (await client.query(vehicleSelectQry)).rows;
+        app.locals.fleet = fleet;
+        client.release();
+    } catch (err) {
+        console.log(err);
+    }
+}
+startupDataLoad();
+
+startTest = async function () {
+    console.log('Test Successful');
+};
 
 var expressLayouts = require('express-ejs-layouts');
 
@@ -24,6 +49,10 @@ var logoutRouter = require('./routes/logout');
 const e = require("express");
 
 
+var createRouter = require('./routes/create');
+var returnRouter = require('./routes/return');
+var vehicleRouter = require('./routes/vehiclereport');
+var fleetRouter = require('./routes/fleet');
 var app = express();
 
 var isProduction = process.env.NODE_ENV === "production";
@@ -181,6 +210,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
@@ -189,6 +220,27 @@ app.use('/about', aboutRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/logout', logoutRouter);
+app.use('/create', createRouter);
+app.use('/return', returnRouter);
+app.use('/vehiclereport', vehicleRouter);
+app.use('/fleet', fleetRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 // Testing GitHub Discord integration 
