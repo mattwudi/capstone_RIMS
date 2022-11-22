@@ -59,10 +59,6 @@ var isProduction = process.env.NODE_ENV === "production";
 
 var connectionString = `${process.env.DATABASE_URL}`;
 
-var pool = new Pool({
-  connectionString : isProduction ? process.env.DATABASE_URL : connectionString
-});
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
