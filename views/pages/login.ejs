@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<main>
+  <div class="jumbotron">
+    <h1>Welcome to RIMS</h1>
+    <p>This is our login page</p>
+  </div>
+
+  <ul>
+    <% if(messages.success_msg) { %>
+      <li><%= messages.success_msg %></li>
+      <% } %>
+  </ul>
+
+  <ul>
+    <% if(messages.error){ %>
+      <li><%= messages.error %></li>
+    <% } %>
+  </ul>
+
+  <div>
+    <form action="/login" method="POST">
+
+      <div>
+        <input type="email" id="email" name="email" placeholder="Email" required>
+      </div>
+
+      <br>
+
+      <div>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+      </div>
+
+      <br>
+
+      <div>
+        <input type="submit" value = "Login">
+      </div>
+
+      <br>
+
+      <a href = "/register">Need to sign up? Register here!</a>
+    </form>
+  </div>
+</main>
+<script>
+
+</script>
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+</html>
