@@ -38,6 +38,8 @@ const PORT = process.env.PORT || 5163;
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var aboutRouter = require('./routes/about');
+var createRouter = require('./routes/create');
+var returnRouter = require('./routes/return');
 var vehicleRouter = require('./routes/vehiclereport');
 var fleetRouter = require('./routes/fleet');
 var app = express();
@@ -57,6 +59,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/about', aboutRouter);
+app.use('/create', createRouter);
+app.use('/return', returnRouter);
 app.use('/vehiclereport', vehicleRouter);
 app.use('/fleet', fleetRouter);
 

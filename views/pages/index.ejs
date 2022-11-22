@@ -14,6 +14,9 @@
     <h1>Welcome to RIMS</h1>
     <p>This is our home page</p>
     <p>Buttons to test database functionallity:</p>
+  </div>
+  <p id="output"></p>
+</main>
     <% buttons.forEach(function(b) { %>
         <button id="<%= b.id %>" onclick="javascript: send(<%= b.id %>);">
             <%= b.name %>
