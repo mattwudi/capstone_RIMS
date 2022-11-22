@@ -3,6 +3,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var logger = require('morgan');
 const { Pool } = require('pg');
 const vehicleSelectQry = `SELECT * FROM VEHICLES ORDER BY YEAR ASC;`;
@@ -14,7 +15,7 @@ const pool = new Pool({
 });
 var fleet;
 
-async function startupDataLoad() {
+startupDataLoad = async function() {
     try {
         const client = await pool.connect();
         fleet = (await client.query(vehicleSelectQry)).rows;
@@ -26,7 +27,9 @@ async function startupDataLoad() {
 }
 startupDataLoad();
 
-
+startTest = async function () {
+    console.log('Test Successful');
+};
 
 var expressLayouts = require('express-ejs-layouts');
 
@@ -46,6 +49,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
