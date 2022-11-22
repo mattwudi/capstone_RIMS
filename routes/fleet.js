@@ -41,7 +41,7 @@ router
             };
             return res.json(response);
         }
-
+        // Test for VSCode
         if (req.body.request === 'delete') { // Delete record from database
             try {
                 const deleteQry = `DELETE FROM VEHICLES WHERE stock_number='${req.body.stock_number}';`;
