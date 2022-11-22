@@ -3,9 +3,33 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var logger = require('morgan');
+const { Pool } = require('pg');
+const vehicleSelectQry = `SELECT * FROM VEHICLES ORDER BY YEAR ASC;`;
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
+var fleet;
 
+startupDataLoad = async function() {
+    try {
+        const client = await pool.connect();
+        fleet = (await client.query(vehicleSelectQry)).rows;
+        app.locals.fleet = fleet;
+        client.release();
+    } catch (err) {
+        console.log(err);
+    }
+}
+startupDataLoad();
 
+startTest = async function () {
+    console.log('Test Successful');
+};
 
 var expressLayouts = require('express-ejs-layouts');
 
@@ -15,6 +39,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var aboutRouter = require('./routes/about');
 var vehicleRouter = require('./routes/vehiclereport');
+var fleetRouter = require('./routes/fleet');
 var app = express();
 
 // view engine setup
@@ -25,13 +50,15 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/about', aboutRouter);
 app.use('/vehiclereport', vehicleRouter);
-
+app.use('/fleet', fleetRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
