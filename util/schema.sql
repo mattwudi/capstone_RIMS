@@ -1,5 +1,6 @@
 DROP TABLE if exists vehicles;
 DROP TABLE if exists customers;
+DROP TABLE if exists users;
 
 CREATE TABLE vehicles (
   stock_number text PRIMARY KEY,
@@ -27,6 +28,14 @@ CREATE TABLE customers (
   ins_name text NOT NULL,
   ins_policy text NOT NULL,
   ins_exp date NOT NULL
+);
+
+CREATE TABLE users (
+  userID BIGSERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(200) NOT NULL,
+  email VARCHAR(200) NOT NULL,
+  password VARCHAR(200) NOT NULL,
+  UNIQUE (email)
 );
 
 INSERT INTO vehicles VALUES
@@ -67,3 +76,4 @@ INSERT INTO customers (f_name, l_name, phone, address, city, state, zip_code,
 
 SELECT * FROM vehicles;
 SELECT * FROM customers;
+SELECT * FROM users;

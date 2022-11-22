@@ -13,6 +13,7 @@
   <div class="jumbotron">
     <h1>Welcome to RIMS</h1>
     <p>This is our home page</p>
+
     <p>Buttons to test database functionallity:</p>
   </div>
   <p id="output"></p>
@@ -60,7 +61,6 @@
       </table>
     </div>
   </div>
-  <p id="output"></p>
 </main>
 <script type ="text/javascript">
   //Link button to vehicle report
@@ -87,28 +87,7 @@
   };
 </script>
 <script>
-    const output = document.getElementById("output");
-    const send = async function (buttonId) {
-        const response = await fetch("/log", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                id: buttonId
-            })
-        });
-        const result = await response.json();
-        console.log(result);
 
-        if (result.error) {
-            output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
-        } else {
-            output.innerHTML = `Created button ${result.newId.new_id} at ${result.when.localtime}. Refresh to view
-                    them all!`;
-        }
-    }
 </script>
 
 <footer>
