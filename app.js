@@ -5,13 +5,26 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const {Pool} = require('pg');
-
+const vehicleSelectQry = `SELECT * FROM VEHICLES ORDER BY YEAR ASC;`;
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
 });
+var fleet;
+
+async function startupDataLoad() {
+    try {
+        const client = await pool.connect();
+        fleet = (await client.query(vehicleSelectQry)).rows;
+        app.locals.fleet = fleet;
+        client.release();
+    } catch (err) {
+        console.log(err);
+    }
+}
+startupDataLoad();
 
 
 var expressLayouts = require('express-ejs-layouts');

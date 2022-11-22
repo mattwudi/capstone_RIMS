@@ -15,7 +15,7 @@ const fleet = "SELECT * FROM vehicles ORDER BY stock_number ASC;";
 
 /* GET create page. */
 router.get('/', function(req, res, next) {
-  res.render('pages/create', {title: 'About'})
+  res.render('pages/create', {title: 'Open Agreement', 'fleet': req.app.locals.fleet})
 }).post("/", async(req, res) => {
   res.set({
     "Content-Type": "application/json"
@@ -45,10 +45,9 @@ router.get('/', function(req, res, next) {
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
 
-    const selectCustId = `SELECT id FROM customers WHERE f_name = $1::text;`;
-    
-    const custId = await client.query(selectCustId, [f_name]);
-    
+    const selectCustId = `SELECT id FROM customers WHERE f_name = '${f_name}' AND l_name = '${l_name}';`; 
+    const custId = await client.query(selectCustId);
+
     const createSql = `INSERT INTO agreements (cust_id, stock_number, date_out, mileage_out) 
       VALUES (${custId.rows[0].id}, '${stock_number}', '${year}-${month}-${day}', ${mileage_out});`
 

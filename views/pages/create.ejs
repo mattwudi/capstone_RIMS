@@ -39,14 +39,12 @@
         <label for="email">Email:</label>
         <input type="email" id="email" name="email"><br>
 
-        <label for="birthday">Birtdhday:</label>
-        <input type="date" id="birthday" name="birthday">
+        <label for="birthday">Birthday:</label>
+        <input type="date" id="birthday" name="birthday"><br>
 
-        <label for="stock_number">Vehicle:</label>
-        <select id="stock_number" name="stock_number">
-          <option value="car">Car</option>
-        </select><br>
+        <label for="stock_number" id="stock_numberLbl">Vehicle: </label>
 
+        <br>
         <label for="mileage_out">Current Mileage:</label>
         <input type="number" id="mileage_out" name="mileage_out"><br>
         
@@ -69,10 +67,67 @@
         <button type="button" id="save" name="save" onclick="javascript:send();">Save</button>
       </form>
 
+      <br>
+      <br>
       <p id="output"></p>
   </div>
 </main>
 <script>
+  let fleetArray = [];
+
+  <% for (let i = 0; i < fleet.length; i++) { %>
+    fleetArray.push({
+      'stock_number': "<%= fleet[i].stock_number %>",
+      'year': <%= fleet[i].year %>,
+      'make': "<%= fleet[i].make %>",
+      'model': "<%= fleet[i].model %>",
+      'color': "<%= fleet[i].color %>",
+      'vin': "<%= fleet[i].vin %>",
+      'mileage': <%= fleet[i].mileage %>,
+      'status': "<%= fleet[i].status %>"
+    });
+  <% } %>
+
+  function stockDropdown() {
+    let select = document.createElement("select");
+    select.required = true;
+    select.title = 'stock_number';
+    select.name = 'stock_number';
+    select.id = 'stock_number';
+    let option = document.createElement('option');
+    option.value = 'chooseVehicle';
+    option.id = 'choose';
+    option.text = 'Select a Vehicle';
+    select.appendChild(option);
+
+    fleetArray.forEach(function (fa) {
+      option = document.createElement('option');
+      option.value = fa.stock_number;
+      option.id = `${fleetArray.findIndex((obj) => { return obj.stock_number === fa.stock_number })}`;
+      option.text = fa.stock_number;
+      select.appendChild(option);
+    });
+
+    const selectOld = document.getElementById('stock_number');
+    if (selectOld) {
+      let oldValue = document.getElementById('stock_number').value;
+      const parentNode = selectOld.parentNode;
+      parentNode.replaceChild(select, selectOld);
+      document.getElementById('stock_number').value = oldValue;
+    } else {
+      document.getElementById('stock_numberLbl').appendChild(select);
+    }
+  }
+  stockDropdown();
+
+
+  document.getElementById('stock_number').addEventListener('change', function () {
+    if (this.value !== 'chooseVehicle') {
+      let idx = fleetArray.findIndex((obj) => {return obj.stock_number === this.value});
+      document.getElementById('mileage_out').value = fleetArray[idx].mileage;
+    }
+  });
+
   const output = document.getElementById("output");
   const send = async function() {
     const response = await fetch("/create", {
@@ -102,7 +157,7 @@
     });
     const result = await response.json();
 
-    if (result.console.error) {
+    if (result.error) {
       output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
     }
     else {
