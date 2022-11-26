@@ -25,7 +25,9 @@
       <select id="availabilityDropdown" oninput="statusFilter()">
         <option>Any</option>
         <option>Available</option> <!--Changed to upper case in database since it's written like that-->
-        <option>Unavailable</option> <!--Name can be changed depending on future decisions-->
+        <option>Unavailable</option>
+        <option>Repairing</option>
+        <option>Decommissioned</option>
       </select>
     </div>
     <div>
@@ -79,9 +81,6 @@
       }
     }       
   };
-</script>
-<script>
-
 </script>
 
 <footer>
