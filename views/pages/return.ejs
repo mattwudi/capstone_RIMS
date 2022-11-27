@@ -11,10 +11,111 @@
 
 <main>
   <div class="jumbotron">
-    <h1>We'll use this page to return agreements</h1>
-    <p>Duh</p>
+    <h1>Return Agreement</h1>
+    <form>
+      <label for="agreement">Agreement Number</label>
+      <input type="text" id="agreement" name="agreement"><br>
+
+      <label for="customer">Customer name</label>
+      <input type="text" id="customer" name="customer"><br>
+
+      <label for="stock_number" id="stock_numberLbl">Stock Number</label>
+      
+      <br>
+      <label for="mileage_out">Outgoing Mileage</label>
+      <input type="number" id="mileage_out" name="mileage_out"><br>
+      
+      <label for="mileage_in">Return Mileage</label>
+      <input type="number" id="mileage_in" name="mileage_in"><br>
+
+      <label for="miles_driven">Miles Driven</label>
+      <input type="number" id="miles_driven" name="miles_driven"><br>
+
+      <label for="status">Set Status to</label>
+      <select name="status" id="status">
+        <option value="Available">Available</option>
+        <option value="Decommissioned">Decommissioned</option>
+        <option value="Repairing">Repairing</option>
+      </select><br>
+
+
+      <button type="button" id="save" name="save" onclick="javascript:send();">Save</button>
+    </form>
+    
   </div>
+  <p id="output"></p>
 </main>
+
+<script>
+  let fleetArray = [];
+  let agreementArray = [];
+
+  <% for (let i = 0; i < onLoan.length; i++) { %>
+    fleetArray.push({
+      'stock_number': "<%= onLoan[i].stock_number %>",
+      'year': <%= onLoan[i].year %>,
+      'make': "<%= onLoan[i].make %>",
+      'model': "<%= onLoan[i].model %>",
+      'color': "<%= onLoan[i].color %>",
+      'vin': "<%= onLoan[i].vin %>",
+      'mileage': <%= onLoan[i].mileage %>,
+      'status': "<%= onLoan[i].status %>"
+    });
+  <% } %>
+
+  <% for (let i = 0; i < agreements.length; i++) { %>
+    agreementArray.push({
+      'agreement_num': <%= agreements[i].agreement_num %>,
+      'cust_id': <%= agreements[i].cust_id %>,
+      'stock_number': "<%= agreements[i].stock_number %>",
+      'date_out': "<%= agreements[i].date_out %>",
+      'mileage_out': <%= agreements[i].mileage_out %>
+    });
+  <% } %>
+
+  function stockDropdown() {
+    let select = document.createElement('select');
+    select.required = true;
+    select.title = 'stock_number';
+    select.name = 'stock_number';
+    select.id = 'stock_number';
+    let option = document.createElement('option');
+    option.value = 'choose';
+    option.id = 'choose';
+    option.text = 'Select a Vehicle to Return';
+    select.appendChild(option);
+
+    agreementArray.forEach(function (aa) {
+      option = document.createElement('option');
+      option.value = aa.stock_number;
+      option.id = `${agreementArray.findIndex((obj) => { return obj.stock_number === aa.stock_number })}`;
+      option.text = aa.stock_number;
+      select.appendChild(option);
+    });
+
+    const selectOld = document.getElementById('stock_number');
+    if (selectOld) {
+      let oldValue = document.getElementById('stock_number').value;
+      const parentNode = selectOld.parentNode;
+      parentNode.replaceChild(select, selectOld);
+      document.getElementById('stock_number').value = oldValue;
+    } else {
+      document.getElementById('stock_numberLbl').appendChild(select);
+    }
+  }
+  stockDropdown();
+
+
+  document.getElementById('stock_number').addEventListener('change', function () {
+    if (this.value !== 'choose') {
+      let idx = agreementArray.findIndex((obj) => {return obj.stock_number === this.value});
+      document.getElementById('agreement').value = agreementArray[idx].agreement_num;
+      document.getElementById('mileage_out').value = agreementArray[idx].mileage_out;
+    }
+  });
+  
+  
+</script>
 
 <footer>
   <%- include('../partials/footer'); %>

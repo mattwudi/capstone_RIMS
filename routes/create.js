@@ -11,8 +11,6 @@ const pool = new Pool({
   }
 });
 
-const fleet = "SELECT * FROM vehicles ORDER BY stock_number ASC;";
-
 /* GET create page. */
 router.get('/', function(req, res, next) {
   res.render('pages/create', {title: 'Open Agreement', 'fleet': req.app.locals.fleet})
