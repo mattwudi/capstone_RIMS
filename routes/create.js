@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
     const address = req.body.address;
     const city = req.body.city;
     const state = req.body.state;
-    const zip = req.body.zip;
+    const zip = req.body.zip_code;
     const phone = req.body.phone;
     const email = req.body.email;
     const birthday = req.body.birthday;
@@ -46,13 +46,28 @@ router.get('/', function(req, res, next) {
     const selectCustId = `SELECT id FROM customers WHERE f_name = '${f_name}' AND l_name = '${l_name}';`; 
     const custId = await client.query(selectCustId);
 
-    const createSql = `INSERT INTO agreements (cust_id, stock_number, date_out, mileage_out) 
+    if (!custId.rows[0]) {
+      console.log('this should create a new customer');
+      const newCustSql = `INSERT INTO customers (f_name, l_name, phone, address, city, state, zip_code, birthday, license_num, license_exp, ins_name, ins_policy, ins_exp)
+        VALUES ('${f_name}', '${l_name}', '${phone}', '${address}', '${city}', '${state}', '${zip}', '${birthday}', '${license_num}', '${license_exp}', '${ins_name}', '${ins_policy}', '${ins_exp}');`;
+      
+      var newCust = await client.query(newCustSql);
+      const newId = await client.query(selectCustId);
+      
+      var createSql = `INSERT INTO agreements (cust_id, stock_number, date_out, mileage_out) 
+      VALUES (${newId.rows[0].id}, '${stock_number}', '${year}-${month}-${day}', ${mileage_out});`
+
+    } else {
+      var createSql = `INSERT INTO agreements (cust_id, stock_number, date_out, mileage_out) 
       VALUES (${custId.rows[0].id}, '${stock_number}', '${year}-${month}-${day}', ${mileage_out});`
+    }
+
 
     const createAgreement = await client.query(createSql);
 
     const response = {
       select: custId ? custId.rows[0] : null,
+      customer: newCust ? newCust.rows[0] : null,
       create: createAgreement ? createAgreement.rows[0] : null 
     };
 
