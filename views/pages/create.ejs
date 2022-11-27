@@ -46,7 +46,7 @@
 
         <br>
         <label for="mileage_out">Current Mileage:</label>
-        <input type="number" id="mileage_out" name="mileage_out"><br>
+        <input type="number" id="mileage_out" name="mileage_out" disabled><br>
         
         <label for="license_num">Drivers License Number:</label>
         <input type="text" id="license_num" name="license_num"><br>
@@ -160,8 +160,7 @@
 
     if (result.error) {
       output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
-    }
-    else {
+    } else {
       console.log(result);
       output.innerHTML = 'Agreement Created!';
     }

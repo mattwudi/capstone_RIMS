@@ -62,13 +62,16 @@ router.get('/', function(req, res, next) {
       VALUES (${custId.rows[0].id}, '${stock_number}', '${year}-${month}-${day}', ${mileage_out});`
     }
 
+    const updateStatusSql = `UPDATE vehicles SET status = 'Loaned Out' WHERE stock_number = '${stock_number}';`
 
     const createAgreement = await client.query(createSql);
+    const updateStatus = await client.query(updateStatusSql);
 
     const response = {
       select: custId ? custId.rows[0] : null,
       customer: newCust ? newCust.rows[0] : null,
-      create: createAgreement ? createAgreement.rows[0] : null 
+      create: createAgreement ? createAgreement.rows[0] : null,
+      update: updateStatus ? updateStatus.rows[0]: null 
     };
 
     res.json(response);
