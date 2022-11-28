@@ -13,33 +13,40 @@
   <div class="jumbotron">
     <h1>Return Agreement</h1>
     <form>
-      <label for="agreement">Agreement Number</label>
-      <input type="text" id="agreement" name="agreement"><br>
+      <div class="form-group row">
+        <label for="agreement" class="col-sm-2 col-form-label">Agreement Number</label>
+        <input type="text" id="agreement" name="agreement" class="form-control col-sm-10">
+      </div>
+      <div class="form-group row">
+        <label for="customer" class="col-sm-2 col-form-label">Customer Name</label>
+        <input type="text" id="customer" name="customer" class="form-control col-sm-10">
+      </div>
+      <div class="form-group row">
+        <label for="stock_number" id="stock_numberLbl" class="col-sm-2 col-form-label">Stock Number</label>
+        <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-10">
+      </div>
+      <div class="form-group row">
+        <label for="mileage_out" class="col-sm-2 col-form-label">Outgoing Mileage</label>
+        <input type="number" id="mileage_out" name="mileage_out" class="form-control col-sm-10" disabled>
+      </div>
+      <div class="form-group row">
+        <label for="mileage_in" class="col-sm-2 col-form-label">Return Mileage</label>
+        <input type="number" id="mileage_in" name="mileage_in" class="form-control col-sm-10">
+      </div>
+      <div class="form-group row">
+        <label for="miles_driven" class="col-sm-2 col-form-label">Miles Driven</label>
+        <input type="number" id="miles_driven" name="miles_driven" class="form-control col-sm-10" disabled>
+      </div>
+      <div class="form-group row">
+        <label for="status" class="col-sm-2 col-form-label">Set Status to</label>
+        <select name="status" id="status" class="form-control col-sm-10">
+          <option value="Available">Available</option>
+          <option value="Decommissioned">Decommissioned</option>
+          <option value="Repairing">Repairing</option>
+        </select>
+      </div>      
 
-      <label for="customer">Customer name</label>
-      <input type="text" id="customer" name="customer"><br>
-
-      <label for="stock_number" id="stock_numberLbl">Stock Number</label>
-      
-      <br>
-      <label for="mileage_out">Outgoing Mileage</label>
-      <input type="number" id="mileage_out" name="mileage_out"><br>
-      
-      <label for="mileage_in">Return Mileage</label>
-      <input type="number" id="mileage_in" name="mileage_in"><br>
-
-      <label for="miles_driven">Miles Driven</label>
-      <input type="number" id="miles_driven" name="miles_driven"><br>
-
-      <label for="status">Set Status to</label>
-      <select name="status" id="status">
-        <option value="Available">Available</option>
-        <option value="Decommissioned">Decommissioned</option>
-        <option value="Repairing">Repairing</option>
-      </select><br>
-
-
-      <button type="button" id="save" name="save" onclick="javascript:send();">Save</button>
+      <button type="button" id="save" name="save" class="btn btn-primary mb-2" onclick="javascript:send();">Save</button>
     </form>
     
   </div>
@@ -68,7 +75,8 @@
       'agreement_num': <%= agreements[i].agreement_num %>,
       'cust_id': <%= agreements[i].cust_id %>,
       'stock_number': "<%= agreements[i].stock_number %>",
-      'date_out': "<%= agreements[i].date_out %>",
+      'first_name': "<%= agreements[i].f_name %>",
+      'last_name': "<%= agreements[i].l_name %>",
       'mileage_out': <%= agreements[i].mileage_out %>
     });
   <% } %>
@@ -79,6 +87,7 @@
     select.title = 'stock_number';
     select.name = 'stock_number';
     select.id = 'stock_number';
+    select.classList.add('form-control', 'col-sm-10');
     let option = document.createElement('option');
     option.value = 'choose';
     option.id = 'choose';
@@ -103,7 +112,7 @@
       document.getElementById('stock_numberLbl').appendChild(select);
     }
   }
-  stockDropdown();
+  // stockDropdown();
 
 
   document.getElementById('stock_number').addEventListener('change', function () {
@@ -111,10 +120,48 @@
       let idx = agreementArray.findIndex((obj) => {return obj.stock_number === this.value});
       document.getElementById('agreement').value = agreementArray[idx].agreement_num;
       document.getElementById('mileage_out').value = agreementArray[idx].mileage_out;
+      document.getElementById('customer').value = agreementArray[idx].first_name + " " + agreementArray[idx].last_name;
     }
   });
+
+  document.getElementById('mileage_in').addEventListener('change', function() {
+
+    let mileage_in = Number(document.getElementById('mileage_in').value);
+    let mileage_out = Number(document.getElementById('mileage_out').value);
+    let miles_driven = mileage_in - mileage_out;
+
+    if (miles_driven > 0) {
+      document.getElementById('miles_driven').value = mileage_in - mileage_out;
+    } else {
+      alert('Mileage in must be more than mileage out');
+    }
+    
+  })
   
-  
+  const output = document.getElementById('output');
+  const send = async function() {
+    const response = await fetch("/return", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        agreement_num: document.getElementById('agreement').value,
+        stock_number: document.getElementById('stock_number').value,
+        mileage_in: document.getElementById('mileage_in').value,
+        status: document.getElementById('status').value
+      })
+    });
+    const result = await response.json();
+
+    if (result.error) {
+      output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
+    } else {
+      console.log(result);
+      output.innerHTML = 'Vehicle was succesfully returned!';
+    }
+  }
 </script>
 
 <footer>
