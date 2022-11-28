@@ -11,9 +11,26 @@ const pool = new Pool({
   }
 });
 
+const fleetSql = "SELECT * FROM vehicles where status = 'Available';";
+
+var available;
+
+availableVehicleLoad = async function() {
+  try {
+    const client = await pool.connect();
+
+    available = (await client.query(fleetSql)).rows;
+
+    client.release();
+  } catch (err) {
+    console.log(err);
+  }
+}
+availableVehicleLoad();
+
 /* GET create page. */
 router.get('/', function(req, res, next) {
-  res.render('pages/create', {title: 'Open Agreement', 'fleet': req.app.locals.fleet})
+  res.render('pages/create', {title: 'Open Agreement', 'fleet':available})
 }).post("/", async(req, res) => {
   res.set({
     "Content-Type": "application/json"
