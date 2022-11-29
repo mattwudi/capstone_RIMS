@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<main id="main">
+  <div class="jumbotron">
+    <h1>This is the Customer page</h1>
+    <p>Search or Add Customers.</p>
+    <p id="infoMessage">- Updating customer information is currently not implemented. This will be
+      implemented in a future release.
+    </p>
+  </div>
+  <p id="output"></p>
+  <div class="row">
+    <div class="cForm left">
+      <form id="cForm">
+        <fieldset>
+          <legend>Enter Customer Information</legend>
+          <div class="form-group">
+            <label for="fName">First Name: </label>
+            <input type="text" id="fName" class="addValue" name="f_name" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="lName">Last Name: </label>
+            <input type="text" id="lName" class="addValue" name="l_name" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="pNumber">Phone Number: </label>
+            <input type="text" id="pNumber" class="addValue" name="phone" onkeypress="return AvoidSpace(event)" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="address">Address: </label>
+            <input type="text" id="address" class="addValue" name="address" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="city">City: </label>
+            <input type="text" id="city" class="addValue" name="city" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="state">State: </label>
+            <input type="text" id="state" class="addValue" name="state" maxlength="2" size="2" onkeypress="return AvoidSpace(event)" value="" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').replace(/(.*)/g, '$1')" required>
+          </div>
+          <div class="form-group">
+            <label for="zCode">Zip Code: </label>
+            <input type="text" id="zCode" class="addValue" name="zip_code" maxlength="5" size="5" onkeypress="return AvoidSpace(event)" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '')" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="bDay">Birthday: </label>
+            <input type="date" id="bDay" class="addValue" name="birthday" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="lNumber">License Number: </label>
+            <input type="text" id="lNumber" class="addValue" name="license_num" onkeypress="return AvoidSpace(event)" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="licExp">License Expiration: </label>
+            <input type="date" id="licExp" class="addValue" name="license_exp" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="insName">Insurance Name: </label>
+            <input type="text" id="insName" class="addValue" name="ins_name" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="insPolicy">Insurance Policy Number: </label>
+            <input type="text" id="insPolicy" class="addValue" name="ins_policy" value="" required>
+          </div>
+          <div class="form-group">
+            <label for="insExp">Insurance Expiration Date: </label>
+            <input type="date" id="insExp" class="addValue" name="ins_exp" value="" required>
+          </div>
+          
+        </fieldset>
+        <br>
+        <button type="button" onclick="javascript: addUser();">Add</button>
+      </form>
+    </div>
+    <div class="cForm right">
+      <form id="searchForm">
+        <fieldset>
+          <legend>Search Existing Customers</legend>
+          <div class="form-group">
+            <label for="searchFName">First Name: </label>
+            <input type="text" id="searchFName" class="searchValue" name="f_name" value="">
+          </div>
+          <div class="form-group">
+            <label for="searchLName">Last Name: </label>
+            <input type="text" id="searchLName" class="searchValue" name="l_name" value="">
+          </div>
+        </fieldset>
+        <br>
+        <button type="button" onclick="javascript: searchCust();">Search</button>
+      </form>
+      <div id="listbox"></div>
+    </div>
+  </div>
+</main>
+<script type="text/javascript">
+  const output = document.getElementById('output');
+  output.style.color = "#F00"
+  let custId = 0;
+
+  const verifyInput = async function () {
+    output.innerHTML = "";
+    let dataValid = true;
+    const elementIds = document.getElementsByClassName("addValue");
+    for (let i = 0; i < elementIds.length; i++) {
+      let elementId = document.getElementById(elementIds[i].id);
+      let elementValue = elementId.value.trim();
+      if (elementValue === '' || elementValue === null) {
+        elementId.style.backgroundColor = "#ff6666";
+        dataValid = false;
+      } else {
+        elementId.style.backgroundColor = null;
+      }
+    }
+    if (!dataValid) {
+      output.innerHTML = "Please fill out all fields!";
+    } 
+    return dataValid;
+  };
+
+  const addUser = async () => {
+    output.innerHTML = "";
+    const dataValid = await verifyInput();
+    if (dataValid) {
+      const bodyObj = {};
+      const elementIds = document.getElementsByClassName("addValue");
+      for (let i = 0; i < elementIds.length; i++) {
+        Object.assign(bodyObj, { [elementIds[i].name]: elementIds[i].value });
+      }
+      const response = await fetch("/customer/addUser", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(bodyObj)
+      });
+      const result = await response.json();
+
+      if (result.error) {
+        output.innerHTML = `<h4>Error: ${result.error.routine}</h4>`;
+      } else if (result.status === 'NotExist') {
+        output.innerHTML = `<h4>Customer ${result.f_name} ${result.l_name} 
+          did not exist. ` + 
+          (result.id ? `Customer created with id ${result.id}` : 
+          `User not able to be created.`) + '</h4>';
+      } else if (result.status === 'Exist') {
+        output.innerHTML = `<h4>Customer ${result.f_name} ${result.l_name} exists.
+          Please verify this customer doesn't exist.</h4>`;
+      }
+    }
+    custId = 0; // Reset search ID
+  };
+
+  const loadCust = async (id) => {
+    output.innerHTML = "";
+    if (id) {
+      const response = await fetch("/customer/loadCustomer", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id: id })
+      });
+      const result = await response.json();
+
+      if (result.error) {
+        output.innerHTML = `<h4>Error: ${result.error.routine}</h4>`;
+      } else {
+        const inFields = document.getElementsByClassName('addValue');
+        for (let i = 0; i < inFields.length; i++) {
+          if (inFields[i].type === 'date') {
+            let fDate = result.results[inFields[i].name].substring(0, 10);
+            inFields[i].value = fDate;
+          } else {
+            inFields[i].value = result.results[inFields[i].name];
+          }
+        }
+      }
+    } else {
+      output.innerHTML = "<h4>Error: Customer wasn't selected. Please select a Customer or Add a new customer.</h4>";
+    }
+  };
+  
+  const searchCust = async () => {
+    const listbox = document.getElementById('listbox');
+    listbox.innerHTML = "";
+    output.innerHTML = "";
+    const bodyObj = {};
+    const elementIds = document.getElementsByClassName("searchValue");
+      for (let i = 0; i < elementIds.length; i++) {
+        Object.assign(bodyObj, { [elementIds[i].name]: elementIds[i].value });
+    }
+    const response = await fetch("/customer/searchCustomer", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(bodyObj)
+    });
+    const result = await response.json();
+
+    if (result.error) {
+      output.innerHTML = `<h3>Error: ${result.error.routine}</h3>`;
+    } else if (result.results && result.results.length) {
+      const btnSubmit = document.createElement('button');
+      const brTag = document.createElement('br');
+      btnSubmit.type = "button";
+      btnSubmit.className = "btnLoad";
+      btnSubmit.innerHTML = "Load Customer";
+      btnSubmit.setAttribute('onclick', "javascript: loadCust(custId);");
+      listbox.innerHTML = "";
+      const h3Element = document.createElement('h3');
+      h3Element.innerHTML = "Select an existing Customer...<br><h6>(DOB: Last Name, First Name)</h6>";
+      h3Element.className = "searchResultHeader";
+      const selectList = document.createElement('select');
+      selectList.id = "selectList";
+      selectList.size = "5";
+      for (let i=0; i < result.results.length; i++) {
+        let item = document.createElement('option');
+        item.id = result.results[i].id;
+        item.value = `id${result.results[i].id}`;
+        let bDay = result.results[i].birthday.substring(0, 10);
+        item.text = `${bDay}: ${result.results[i].l_name}, ${result.results[i].f_name}`;
+        selectList.appendChild(item);
+      }
+      listbox.appendChild(h3Element);
+      listbox.appendChild(selectList);
+      listbox.appendChild(brTag);
+      listbox.appendChild(btnSubmit);
+      document.getElementById('selectList').addEventListener('change', function () {
+        custId = this.value.substring(2);
+      });
+    } else {
+      output.innerHTML = "<h4>No Customers exist with that search criteria.</h4>";
+    }
+  };
+
+  function AvoidSpace(event) {
+        var k = event ? event.which : window.event.keyCode;
+        if (k == 32) return false;
+    }
+
+  
+</script>
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+</html>
