@@ -30,10 +30,10 @@ agreementDataLoad = async function() {
         console.log(err);
     }
 }
-agreementDataLoad();
 
 /* GET return page. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
+  await agreementDataLoad();
   res.render('pages/return', {title: 'Return', 'onLoan': onLoan, 'agreements': agreements});
 }).post('/', async(req, res) => {
   res.set({

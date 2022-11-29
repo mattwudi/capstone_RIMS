@@ -26,10 +26,11 @@ availableVehicleLoad = async function() {
     console.log(err);
   }
 }
-availableVehicleLoad();
+
 
 /* GET create page. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
+  await availableVehicleLoad();
   res.render('pages/create', {title: 'Open Agreement', 'fleet':available})
 }).post("/", async(req, res) => {
   res.set({
