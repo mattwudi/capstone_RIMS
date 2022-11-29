@@ -30,6 +30,7 @@ router.get('/', async (req, res) => {
             "recentRentals": recentRentals.rows
         }
         res.render('pages/index', args);
+        client.release();
     } catch (err) {
         console.error(err);
         res.set({ 
