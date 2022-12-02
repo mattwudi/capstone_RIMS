@@ -80,8 +80,6 @@
           <label for="ins_exp" class="col-sm-3 col-form-label">Expiration Date</label>
           <input type="date" id="ins_exp" name="ins_exp" class="form-control col-sm-4">
         </div>
-
-        <!-- <a href="printagreement" target="_blank" class="btn btn-secondary mb-2" role="button">Print Agreement</a> -->
         
         <button type="button" id="save" name="save" class="btn btn-primary mb-2" onclick="javascript:send();">Save</button>
       </form>
@@ -175,18 +173,14 @@
     });
     const result = await response.json();
 
-    //document.getElementById("save").onclick = function() {
-    //window.open("printagreement", "_blank");
-  //};
+
     encodeJson = encodeURIComponent(jsonForm);
-    //console.log(encodeJson);
-    //if (result.error) {
-      //output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
-    //} else {
+    if (result.error) {
+      output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
+    } else {
       console.log(result);
-      //output.innerHTML = 'Agreement Created!';
-      output.innerHTML = '<a href="printagreement?form='+encodeJson+'" target="_blank" class="btn btn-secondary mb-2" role="button">Print Agreement</a>'
-    //}
+      output.innerHTML = 'Agreement Created!<br><a href="printagreement?form='+encodeJson+'" target="_blank" class="btn btn-secondary mb-2" role="button">Print Agreement</a>'
+    }
   }
 
 </script>

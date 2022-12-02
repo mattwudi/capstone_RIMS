@@ -12,9 +12,6 @@ router.get('/', async (req, res) => {
     try {
         //Get info fron URL encode
         formJson = JSON.parse(decodeURIComponent(req.query.form));
-        console.log(formJson);
-        
-        //const client = await pool.connect();
 
         const args = {
             title: 'Express',
