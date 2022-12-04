@@ -16,16 +16,17 @@
   </div>
   <p id="output"></p>
 </main>
-
-    <!--Button to vehicle report-->
-    <br><button id="vReportButton">Vehicle Report</button>
+  <div>
+    <h2>Vehicles</h2>
     <!--Availability dropdown-->
     <div>
       <label>Vehicle availability</label>
       <select id="availabilityDropdown" oninput="statusFilter()">
         <option>Any</option>
         <option>Available</option> <!--Changed to upper case in database since it's written like that-->
-        <option>Unavailable</option> <!--Name can be changed depending on future decisions-->
+        <option>Loaned Out</option>
+        <option>Repairing</option>
+        <option>Decommissioned</option>
       </select>
     </div>
     <div>
@@ -54,6 +55,44 @@
       <% }); %> 
       </table>
     </div>
+    <br>
+    <!--Button to vehicle report-->
+    <button id="vReportButton">Vehicle Report</button>
+    <br>
+    <br>
+    <h2>Most recent rentals</h2>
+    <div>
+      <table id="recentRentalTable" border="1px solid black">
+        <tr>
+          <th>Stock Number</th>
+          <th>Year</th>
+          <th>Make</th>
+          <th>Model</th>
+          <th>Color</th>
+          <th>VIN</th>
+          <th>Mileage</th>
+          <th>Customer ID</th>
+          <th>Customer First Name</th>
+          <th>Customer Last Name</th>
+          <th>Date Out</th>
+        </tr>
+        <% recentRentals.forEach(function(r) { %>
+        <tr>
+          <td><%= r.stock_number %></td>
+          <td><%= r.year %></td>
+          <td><%= r.make %></td>
+          <td><%= r.model %></td>
+          <td><%= r.color %></td>
+          <td><%= r.vin %></td>
+          <td><%= r.mileage %></td>
+          <td><%= r.id %></td>
+          <td><%= r.f_name %></td>
+          <td><%= r.l_name %></td>
+          <td><%= r.date_out %></td>
+        </tr>
+        <% }); %>
+      </table>
+    </div>
   </div>
 </main>
 <script type ="text/javascript">
@@ -79,9 +118,6 @@
       }
     }       
   };
-</script>
-<script>
-
 </script>
 
 <footer>

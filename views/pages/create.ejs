@@ -12,65 +12,83 @@
 <main>
   <div class="jumbotron">
     <h1>Open Agreement</h1>
+    <br>
       <form>
-        <label for="fname">First Name:</label>
-        <input type="text" id="fname" name="fname"><br>
-
-        <label for="lname">Last Name:</label>
-        <input type="text" id="lname" name="lname"><br>
-
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address"><br>
-
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city">
-
-        <label for="state">State:</label>
-        <select id="state" name="state">
-          <option value="WI">WI</option>
-        </select><br>
-
-        <label for="zip">Zip Code:</label>
-        <input type="number" id="zip" name="zip"><br>
-
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone" pattern="[0-9]{3}[0-9]{3}[0-9]{4}"><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email"><br>
-
-        <label for="birthday">Birthday:</label>
-        <input type="date" id="birthday" name="birthday"><br>
-
-        <label for="stock_number" id="stock_numberLbl">Vehicle: </label>
-
-        <br>
-        <label for="mileage_out">Current Mileage:</label>
-        <input type="number" id="mileage_out" name="mileage_out"><br>
+        <div class="form-group row">
+          <label for="fname" class="col-sm-3 col-form-label">First Name</label>
+          <input type="text" id="fname" name="fname" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="lname" class="col-sm-3 col-form-label">Last Name</label>
+          <input type="text" id="lname" name="lname" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row" >
+          <label for="address" class="col-sm-3 col-form-label">Address</label>
+          <input type="text" id="address" name="address" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="city" class="col-sm-3 col-form-label">City</label>
+          <input type="text" id="city" name="city" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="state" class="col-sm-3 col-form-label">State</label>
+          <select id="state" name="state" class="form-control col-sm-4">
+            <option value="WI">WI</option>
+          </select>
+        </div>
+        <div class="form-group row">
+          <label for="zip" class="col-sm-3 col-form-label">Zip Code</label>
+          <input type="number" id="zip" name="zip" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="phone" class="col-sm-3 col-form-label">Phone Number</label>
+          <input type="tel" id="phone" name="phone" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" class="form-control col-sm-4">  
+        </div>
+        <div class="form-group row">
+          <label for="email" class="col-sm-3 col-form-label">Email</label>
+          <input type="email" id="email" name="email" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="birthday" class="col-sm-3 col-form-label">Birthday</label>
+          <input type="date" id="birthday" name="birthday" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="stock_number" id="stock_numberLbl" class="col-sm-3 col-form-label">Vehicle</label>
+          <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter unit for loan...">
+        </div>
+        <div class="form-group row">
+          <label for="mileage_out" class="col-sm-3 col-form-label">Current Mileage</label>
+          <input type="number" id="mileage_out" name="mileage_out" disabled class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="license_num" class="col-sm-3 col-form-label">Drivers License Number</label>
+          <input type="text" id="license_num" name="license_num" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="license_exp" class="col-sm-3 col-form-label">Expiration Date</label>
+          <input type="date" id="license_exp" name="license_exp" class="form-control col-sm-4"> 
+        </div>
+        <div class="form-group row">
+          <label for="ins_name" class="col-sm-3 col-form-label">Insurance Provider</label>
+          <input type="text" id="ins_name" name="ins_name" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="ins_policy" class="col-sm-3 col-form-label">Policy Number</label>
+          <input type="text" id="ins_policy" name="ins_policy" class="form-control col-sm-4">
+        </div>
+        <div class="form-group row">
+          <label for="ins_exp" class="col-sm-3 col-form-label">Expiration Date</label>
+          <input type="date" id="ins_exp" name="ins_exp" class="form-control col-sm-4">
+        </div>
         
-        <label for="license_num">Drivers License Number:</label>
-        <input type="text" id="license_num" name="license_num"><br>
-
-        <label for="license_exp">Expiration Date:</label>
-        <input type="date" id="license_exp" name="license_exp"><br>        
-        
-
-        <label for="ins_name">Insurance Provider:</label>
-        <input type="text" id="ins_name" name="ins_name"><br>
-
-        <label for="ins_policy">Policy Number:</label>
-        <input type="text" id="ins_policy" name="ins_policy"><br>
-
-        <label for="ins_exp">Expiration Date:</label>
-        <input type="date" id="ins_exp" name="ins_exp"><br>
-
-        <button type="button" id="save" name="save" onclick="javascript:send();">Save</button>
+        <button type="button" id="save" name="save" class="btn btn-primary mb-2" onclick="javascript:send();">Save</button>
       </form>
 
-      <br>
-      <br>
-      <p id="output"></p>
+      
+      
+      
   </div>
+  <p id="output"></p>
 </main>
 <script>
   let fleetArray = [];
@@ -94,6 +112,7 @@
     select.title = 'stock_number';
     select.name = 'stock_number';
     select.id = 'stock_number';
+    select.classList.add('form-control', 'col-sm-4')
     let option = document.createElement('option');
     option.value = 'chooseVehicle';
     option.id = 'choose';
@@ -118,7 +137,6 @@
       document.getElementById('stock_numberLbl').appendChild(select);
     }
   }
-  stockDropdown();
 
 
   document.getElementById('stock_number').addEventListener('change', function () {
@@ -159,8 +177,7 @@
 
     if (result.error) {
       output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
-    }
-    else {
+    } else {
       console.log(result);
       output.innerHTML = 'Agreement Created!';
     }
