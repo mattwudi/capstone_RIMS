@@ -46,11 +46,8 @@ var aboutRouter = require('./routes/about');
 var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/register');
 var logoutRouter = require('./routes/logout');
-<<<<<<< HEAD
 var historyRouter = require('./routes/history');
-=======
 var customerRouter = require('./routes/customer');
->>>>>>> ac228baf262bcc4fd0202568396b96584adadf00
 const e = require("express");
 
 
@@ -225,11 +222,8 @@ app.use('/create', createRouter);
 app.use('/return', returnRouter);
 app.use('/vehiclereport', vehicleRouter);
 app.use('/fleet', fleetRouter);
-<<<<<<< HEAD
 app.use('/history', historyRouter);
-=======
 app.use('/customer', customerRouter);
->>>>>>> ac228baf262bcc4fd0202568396b96584adadf00
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
