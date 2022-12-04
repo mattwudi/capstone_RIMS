@@ -1,6 +1,7 @@
 DROP TABLE if exists vehicles;
 DROP TABLE if exists customers;
 DROP TABLE if exists users;
+DROP TABLE if exists agreements;
 
 CREATE TABLE vehicles (
   stock_number text PRIMARY KEY,
@@ -38,6 +39,16 @@ CREATE TABLE users (
   UNIQUE (email)
 );
 
+CREATE TABLE agreements (
+  agreement_num serial PRIMARY KEY NOT NULL,
+  cust_id int NOT NULL,
+  stock_number text NOT NULL,
+  date_out date NOT NULL,
+  date_in date,
+  mileage_out int NOT NULL,
+  mileage_in int
+)
+
 INSERT INTO vehicles VALUES
   ('B7616',2017,'Ford','Escape','Silver','1FMCU9J92HUB30798',79588,'Available');
 INSERT INTO vehicles VALUES
@@ -55,17 +66,17 @@ INSERT INTO vehicles VALUES
 INSERT INTO vehicles VALUES
   ('B7744',2018,'Toyota','Highlander','Brown','5TDDZRFH2JS496779',49008,'Available');
 INSERT INTO vehicles VALUES
-  ('B7766',2020,'Toyota','Highlander','Silver','5TDGZRBH1LS000683',64080,'Available');
+  ('B7766',2020,'Toyota','Highlander','Silver','5TDGZRBH1LS000683',64080,'Loaned Out');
 INSERT INTO vehicles VALUES
-  ('B7885',2020,'Toyota','Highlander','Black','5TDGZRBH7LS507541',63010,'Available');
+  ('B7885',2020,'Toyota','Highlander','Black','5TDGZRBH7LS507541',63010,'Loaned Out');
 INSERT INTO vehicles VALUES
-  ('B7966',2020,'Toyota','Corolla','Silver','5YFEPRAE6LP031702',58240,'Available');
+  ('B7966',2020,'Toyota','Corolla','Silver','5YFEPRAE6LP031702',58240,'Repairing');
 INSERT INTO vehicles VALUES
-  ('B8021',2020,'Toyota','Camry','Blue','4T1G11AKXLU326737',68017,'Unavailable');
+  ('B8021',2020,'Toyota','Camry','Blue','4T1G11AKXLU326737',68017,'Repairing');
 INSERT INTO vehicles VALUES
-  ('B8166',2018,'Toyota','Highlander','Blue','5TDJZRFH8JS830851',96339,'Unavailable');
+  ('B8166',2018,'Toyota','Highlander','Blue','5TDJZRFH8JS830851',96339,'Repairing');
 INSERT INTO vehicles VALUES
-  ('TV1332A',2017,'Toyota','4Runner','Red','JTEBU5JR5H5424257',86276,'Unavailable');
+  ('TV1332A',2017,'Toyota','4Runner','Red','JTEBU5JR5H5424257',86276,'Decommissioned');
 
 
 INSERT INTO customers (f_name, l_name, phone, address, city, state, zip_code,
