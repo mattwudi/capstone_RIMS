@@ -46,6 +46,7 @@ var aboutRouter = require('./routes/about');
 var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/register');
 var logoutRouter = require('./routes/logout');
+var historyRouter = require('./routes/history');
 const e = require("express");
 
 
@@ -174,8 +175,8 @@ var authenticateUser = (email, password, done) => {
 }
 
 app.post("/login", passport.authenticate('local', {
-  successRedirect: "/pages/index", 
-  failureRedirect: "/pages/login",
+  successRedirect: "/", 
+  failureRedirect: "/login",
   failureFlash: true
   })
 );
@@ -220,6 +221,7 @@ app.use('/create', createRouter);
 app.use('/return', returnRouter);
 app.use('/vehiclereport', vehicleRouter);
 app.use('/fleet', fleetRouter);
+app.use('/history', historyRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
