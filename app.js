@@ -46,6 +46,7 @@ var aboutRouter = require('./routes/about');
 var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/register');
 var logoutRouter = require('./routes/logout');
+var customerRouter = require('./routes/customer');
 const e = require("express");
 
 
@@ -220,6 +221,7 @@ app.use('/create', createRouter);
 app.use('/return', returnRouter);
 app.use('/vehiclereport', vehicleRouter);
 app.use('/fleet', fleetRouter);
+app.use('/customer', customerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

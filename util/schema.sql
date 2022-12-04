@@ -40,14 +40,14 @@ CREATE TABLE users (
 );
 
 CREATE TABLE agreements (
-  agreement_num serial PRIMARY KEY NOT NULL,
+  agreement_num serial PRIMARY KEY,
   cust_id int NOT NULL,
   stock_number text NOT NULL,
   date_out date NOT NULL,
-  date_in date,
+  date_in date NULL,
   mileage_out int NOT NULL,
-  mileage_in int
-)
+  mileage_in int NULL
+);
 
 INSERT INTO vehicles VALUES
   ('B7616',2017,'Ford','Escape','Silver','1FMCU9J92HUB30798',79588,'Available');
@@ -82,9 +82,16 @@ INSERT INTO vehicles VALUES
 INSERT INTO customers (f_name, l_name, phone, address, city, state, zip_code,
   birthday, license_num, license_exp, ins_name, ins_policy, ins_exp)
   VALUES ('Matt','Wudi','(715)-967-7707','818 Main St','Eau Claire','WI','54701',
-  '1995-08-12','W300-5569-5292-02','2030-08-12','State Farm','363 5274-A06-49','2023-01-06');
+  '1995-08-12','W300-5569-5292-02','2030-08-12','State Farm','363 5274-A06-49','2023-01-06'),
+  ('Tyler','Grant','(715)-543-9900', '398 Trippy Ln', 'Chippewa Falls', 'WI','54729',
+  '1991-12-12','P488-9932-4542-03','2029-12-12','State Farm','567 2139-E84-27','2023-03-14');
 
+INSERT INTO agreements (agreement_num, cust_id, stock_number, date_out, date_in, mileage_out, mileage_in)
+VALUES
+  (1,1,'B7720','2022-11-22',null,62317,null),
+  (2,2,'B7885','2022-11-27',null,63010,null);
 
 SELECT * FROM vehicles;
 SELECT * FROM customers;
 SELECT * FROM users;
+SELECT * FROM agreements;

@@ -6,3 +6,43 @@ body {
 a {
   color: #00B7FF;
 }
+
+.cForm {
+  width: 400px;
+  margin-right: auto;
+}
+
+.cForm label {
+  padding-left: 5px;
+  width: 150px;
+}
+
+fieldset {
+  border: solid .5px;
+}
+
+fieldset legend {
+  margin-bottom: 20px;
+  width: 300px;
+  text-align: center;
+  background-color: #CCC;
+}
+
+.searchResultHeader {
+  padding-top: 10px;
+}
+
+#listbox {
+  padding-top: 5px;
+}
+
+h6 {
+  padding-top: 5px;
+}
+
+.btnLoad {
+  margin-top: 10px;
+}
+
+
+
