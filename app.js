@@ -55,6 +55,7 @@ var createRouter = require('./routes/create');
 var returnRouter = require('./routes/return');
 var vehicleRouter = require('./routes/vehiclereport');
 var fleetRouter = require('./routes/fleet');
+var printRouter = require('./routes/printagreement');
 var app = express();
 
 var isProduction = process.env.NODE_ENV === "production";
@@ -224,6 +225,7 @@ app.use('/vehiclereport', vehicleRouter);
 app.use('/fleet', fleetRouter);
 app.use('/history', historyRouter);
 app.use('/customer', customerRouter);
+app.use('/printagreement', printRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
