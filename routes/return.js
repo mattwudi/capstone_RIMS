@@ -12,8 +12,8 @@ const pool = new Pool({
   }
 });
 
-const fleetSql = "SELECT * FROM vehicles WHERE status = 'Loaned Out';";
-const agreementSql = "SELECT agreement_num, cust_id, stock_number, f_name, l_name, mileage_out FROM agreements INNER JOIN customers ON customers.id = agreements.cust_id WHERE date_in is null;"; 
+const fleetSql = "SELECT * FROM vehicles;";
+const agreementSql = "SELECT agreement_num, cust_id, stock_number, f_name, l_name, mileage_out, mileage_in FROM agreements INNER JOIN customers ON customers.id = agreements.cust_id WHERE date_out is not null;"; 
 
 var onLoan;
 var agreements;
@@ -42,28 +42,45 @@ router.get('/', async function(req, res, next) {
 
   try {
     const client = await pool.connect();
+    const button = req.body.button;
     const agreement_num = req.body.agreement_num;
     const stock_number = req.body.stock_number;
     const status = req.body.status;
     const mileage_in = req.body.mileage_in;
     const date = new Date();
     
+    
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
 
-    const closeAgreementSql = `UPDATE agreements SET date_in = '${year}-${month}-${day}', mileage_in = ${mileage_in} 
+    let args = {};
+    var updateStatusSql;
+    var updateStatus;
+
+    if (button == 'save') {
+      const closeAgreementSql = `UPDATE agreements SET date_in = '${year}-${month}-${day}', mileage_in = ${mileage_in} 
       WHERE agreement_num = ${agreement_num};`;
 
-    const updateStatusSql = `UPDATE vehicles SET status = '${status}', mileage = ${mileage_in} WHERE stock_number = '${stock_number}';`;
+      updateStatusSql = `UPDATE vehicles SET status = '${status}', mileage = ${mileage_in} WHERE stock_number = '${stock_number}';`
 
-    const closeAgreement = await client.query(closeAgreementSql);
-    const updateStatus = await client.query(updateStatusSql);
+      const closeAgreement = await client.query(closeAgreementSql);
+      updateStatus = await client.query(updateStatusSql)
 
-    const response = {
-      close: closeAgreement ? closeAgreement.rows[0]: null,
-      update: updateStatus ? updateStatus.rows[0]: null
-    };
+      args.message = `${stock_number} was sucessfully returned!`;
+
+    } else if (button == 'reopen') {
+      const reopenSql = `UPDATE agreements SET date_in = NULL, mileage_in = NULL WHERE agreement_num = '${agreement_num}';`
+      const updateStatusSql = `UPDATE vehicles SET status = 'Loaned Out' WHERE stock_number = '${stock_number}';`;
+
+      const reopenAgreement = await client.query(reopenSql);
+      updateStatus = await client.query(updateStatusSql);
+
+      args.message = `Agreement ${agreement_num} was succesfully reopened.`;
+    }
+
+
+    const response = args;
 
     res.json(response);
     client.release();
