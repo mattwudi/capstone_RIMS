@@ -27,12 +27,14 @@ router
         const selectVQry = `SELECT * FROM VEHICLES WHERE stock_number = '${id}'`;
         let updateQry = "UPDATE VEHICLES SET ";
         const timeSql = "SELECT LOCALTIME;";
+        let client = {};
+        let vehicle = {};
         //const vehicle = {};
         const timeStamp = {};
 
         try {
-            var client = await pool.connect();
-            var vehicle = await client.query(selectVQry);
+            client = await pool.connect();
+            vehicle = await client.query(selectVQry);
         } catch (err) {
             const response = {
                 stock_number: req.body.stock_number,
@@ -72,7 +74,7 @@ router
                     updateQry += [i] + '=' + (isNaN(req.body[i]) ? "'" + req.body[i] + "'" : req.body[i]) +
                         (Object.keys(req.body).length !== Object.keys(bodyObj).length ? ', ' : ' ');
                 }
-                updateQry += `WHERE stock_number='${bodyObj['stock_number']}' RETURNING stock_number AS stock_number;`;
+                updateQry += `WHERE stock_number='${bodyObj.stock_number}' RETURNING stock_number AS stock_number;`;
 
                 const updateSql = await client.query(updateQry);
 

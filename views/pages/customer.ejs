@@ -20,6 +20,24 @@
   <p id="output"></p>
   <div class="row">
     <div class="cForm left">
+        <form id="searchForm">
+            <fieldset>
+                <legend>Search Existing Customers</legend>
+                <div class="form-group">
+                    <label for="searchFName">First Name: </label>
+                    <input type="text" id="searchFName" class="searchValue" name="f_name" value="">
+                </div>
+                <div class="form-group">
+                    <label for="searchLName">Last Name: </label>
+                    <input type="text" id="searchLName" class="searchValue" name="l_name" value="">
+                </div>
+            </fieldset>
+            <br>
+            <button type="button" onclick="javascript: searchCust();">Search</button>
+        </form>
+        <div id="listbox"></div>
+    </div>
+    <div class="cForm right">
       <form id="cForm">
         <fieldset>
           <legend>Enter Customer Information</legend>
@@ -80,24 +98,6 @@
         <br>
         <button type="button" onclick="javascript: addUser();">Add</button>
       </form>
-    </div>
-    <div class="cForm right">
-      <form id="searchForm">
-        <fieldset>
-          <legend>Search Existing Customers</legend>
-          <div class="form-group">
-            <label for="searchFName">First Name: </label>
-            <input type="text" id="searchFName" class="searchValue" name="f_name" value="">
-          </div>
-          <div class="form-group">
-            <label for="searchLName">Last Name: </label>
-            <input type="text" id="searchLName" class="searchValue" name="l_name" value="">
-          </div>
-        </fieldset>
-        <br>
-        <button type="button" onclick="javascript: searchCust();">Search</button>
-      </form>
-      <div id="listbox"></div>
     </div>
   </div>
 </main>
@@ -213,6 +213,7 @@
     if (result.error) {
       output.innerHTML = `<h3>Error: ${result.error.routine}</h3>`;
     } else if (result.results && result.results.length) {
+      const fieldsetTag = document.createElement('fieldset');
       const btnSubmit = document.createElement('button');
       const brTag = document.createElement('br');
       btnSubmit.type = "button";
@@ -220,9 +221,8 @@
       btnSubmit.innerHTML = "Load Customer";
       btnSubmit.setAttribute('onclick', "javascript: loadCust(custId);");
       listbox.innerHTML = "";
-      const h3Element = document.createElement('h3');
-      h3Element.innerHTML = "Select an existing Customer...<br><h6>(DOB: Last Name, First Name)</h6>";
-      h3Element.className = "searchResultHeader";
+      const legendTag = document.createElement('legend');
+      legendTag.innerHTML = "Select an existing Customer...";
       const selectList = document.createElement('select');
       selectList.id = "selectList";
       selectList.size = "5";
@@ -234,9 +234,13 @@
         item.text = `${bDay}: ${result.results[i].l_name}, ${result.results[i].f_name}`;
         selectList.appendChild(item);
       }
-      listbox.appendChild(h3Element);
-      listbox.appendChild(selectList);
-      listbox.appendChild(brTag);
+      const h6Tag = document.createElement('h6');
+      h6Tag.innerHTML = "(DOB: Last Name, First Name)";
+      fieldsetTag.appendChild(legendTag);
+      fieldsetTag.appendChild(h6Tag);
+      fieldsetTag.appendChild(selectList);
+      fieldsetTag.appendChild(brTag);
+      listbox.appendChild(fieldsetTag);
       listbox.appendChild(btnSubmit);
       document.getElementById('selectList').addEventListener('change', function () {
         custId = this.value.substring(2);

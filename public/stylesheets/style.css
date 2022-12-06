@@ -33,15 +33,28 @@ fieldset legend {
 }
 
 #listbox {
-  padding-top: 5px;
+  padding-top: 10px;
+  padding-bottom: 20px;
 }
 
-h6 {
-  padding-top: 5px;
+#listbox h6 {
+  padding-left: 5px;
+}
+
+#listbox select {
+  width: 100%;
+}
+
+#listbox legend {
+  width: 80%;
 }
 
 .btnLoad {
   margin-top: 10px;
+}
+
+#searchForm {
+    padding-bottom: 10px;
 }
 
 

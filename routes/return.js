@@ -29,7 +29,7 @@ agreementDataLoad = async function() {
     } catch (err) {
         console.log(err);
     }
-}
+};
 
 /* GET return page. */
 router.get('/', async function(req, res, next) {
@@ -55,10 +55,10 @@ router.get('/', async function(req, res, next) {
     const closeAgreementSql = `UPDATE agreements SET date_in = '${year}-${month}-${day}', mileage_in = ${mileage_in} 
       WHERE agreement_num = ${agreement_num};`;
 
-    const updateStatusSql = `UPDATE vehicles SET status = '${status}', mileage = ${mileage_in} WHERE stock_number = '${stock_number}';`
+    const updateStatusSql = `UPDATE vehicles SET status = '${status}', mileage = ${mileage_in} WHERE stock_number = '${stock_number}';`;
 
     const closeAgreement = await client.query(closeAgreementSql);
-    const updateStatus = await client.query(updateStatusSql)
+    const updateStatus = await client.query(updateStatusSql);
 
     const response = {
       close: closeAgreement ? closeAgreement.rows[0]: null,
@@ -74,6 +74,6 @@ router.get('/', async function(req, res, next) {
     });
   }
   
-})
+});
 
 module.exports = router;
