@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
         const vehicles = await client.query(vehicleSql);
 
         //Query database to get recent rentals
-        const rentalSql = "SELECT v.stock_number, v.year, v.make, v.model, v.color, v.vin, v.mileage, c.id, c.f_name, c.l_name, a.date_out FROM vehicles v INNER JOIN agreements a ON v.stock_number = a.stock_number INNER JOIN customers c ON a.cust_id = c.id ORDER BY a.date_out LIMIT 10;"
+        const rentalSql = "SELECT v.stock_number, v.year, v.make, v.model, v.color, v.vin, v.mileage, c.id, c.f_name, c.l_name, a.date_out FROM vehicles v INNER JOIN agreements a ON v.stock_number = a.stock_number INNER JOIN customers c ON a.cust_id = c.id ORDER BY a.date_out LIMIT 10;";
         const recentRentals = await client.query(rentalSql);
 
         const args = {
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
             "buttons": buttons ? buttons.rows : null,
             "vehicles": vehicles.rows,
             "recentRentals": recentRentals.rows
-        }
+        };
         res.render('pages/index', args);
         client.release();
     } catch (err) {

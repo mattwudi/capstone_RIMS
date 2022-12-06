@@ -29,7 +29,7 @@ agreementDataLoad = async function() {
     } catch (err) {
         console.log(err);
     }
-}
+};
 
 /* GET return page. */
 router.get('/', async function(req, res, next) {
@@ -79,7 +79,6 @@ router.get('/', async function(req, res, next) {
       args.message = `Agreement ${agreement_num} was succesfully reopened.`;
     }
 
-    
 
     const response = args;
 
@@ -92,6 +91,6 @@ router.get('/', async function(req, res, next) {
     });
   }
   
-})
+});
 
 module.exports = router;
