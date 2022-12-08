@@ -48,9 +48,6 @@ var registerRouter = require('./routes/register');
 var logoutRouter = require('./routes/logout');
 var historyRouter = require('./routes/history');
 var customerRouter = require('./routes/customer');
-const e = require("express");
-
-
 var createRouter = require('./routes/create');
 var returnRouter = require('./routes/return');
 var vehicleRouter = require('./routes/vehiclereport');
@@ -59,8 +56,6 @@ var printRouter = require('./routes/printagreement');
 var app = express();
 
 var isProduction = process.env.NODE_ENV === "production";
-
-var connectionString = `${process.env.DATABASE_URL}`;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -245,7 +240,6 @@ app.use(function(err, req, res, next) {
 
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
-// Testing GitHub Discord integration 
 
 // .get for various pages
 module.exports = app;
