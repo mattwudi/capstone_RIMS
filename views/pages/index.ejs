@@ -20,15 +20,15 @@
     <h2>Vehicles</h2>
     <!--Availability dropdown-->
     <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="availabilityDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" oninput="statusFilter()">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="availabilityDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Vehicle Availability
       </button>
       <div class="dropdown-menu" aria-labelledby="availabilityDropdown">
-        <button class="dropdown-item" type="button">Any</button>
-        <button class="dropdown-item" type="button">Available</button>
-        <button class="dropdown-item" type="button">Loaned Out</button>
-        <button class="dropdown-item" type="button">Repairing</button>
-        <button class="dropdown-item" type="button">Decommissioned</button>
+        <button class="dropdown-item" type="button" onclick="statusFilter('Any')">Any</button>
+        <button class="dropdown-item" type="button" onclick="statusFilter('Available')">Available</button>
+        <button class="dropdown-item" type="button" onclick="statusFilter('Loaned Out')">Loaned Out</button>
+        <button class="dropdown-item" type="button" onclick="statusFilter('Repairing')">Repairing</button>
+        <button class="dropdown-item" type="button" onclick="statusFilter('Decommissioned')">Decommissioned</button>
       </div>
     </div>
     <!-- <div>
@@ -72,7 +72,7 @@
     <button id="vReportButton" class="btn btn-primary">Vehicle Report</button>
     <br>
     <br>
-    <h2>Most recent rentals</h2>
+    <h2>Recent Rentals</h2>
     <div>
       <table id="recentRentalTable" class="table table-striped">
         <tr>
@@ -113,21 +113,19 @@
     location.href = "vehiclereport";
   };
   //Dropdown function to sort table
-  function statusFilter() {
-  let input, table, tr, filter, td, status;
-  input = document.getElementById("availabilityDropdown");
-  table = document.getElementById("vehicleTable");
-  tr = table.getElementsByTagName("tr");
-  filter = input.value;
+  function statusFilter(filter) {
+    let table, tr, td, status;
+    table = document.getElementById("vehicleTable");
+    tr = table.getElementsByTagName("tr");
 
-  for (let row of tr) {
-    td = row.getElementsByTagName("td");
-    status = td[7] || null;
-    if (filter === "Any" || !status || (filter === status.textContent)) {
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
+    for (let row of tr) {
+      td = row.getElementsByTagName("td");
+      status = td[7] || null;
+      if (filter === "Any" || !status || (filter === status.textContent)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
     }       
   };
 </script>
