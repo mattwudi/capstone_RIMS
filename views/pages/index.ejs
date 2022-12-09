@@ -19,18 +19,30 @@
   <div>
     <h2>Vehicles</h2>
     <!--Availability dropdown-->
-    <div>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="availabilityDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" oninput="statusFilter()">
+        Vehicle Availability
+      </button>
+      <div class="dropdown-menu" aria-labelledby="availabilityDropdown">
+        <button class="dropdown-item" type="button">Any</button>
+        <button class="dropdown-item" type="button">Available</button>
+        <button class="dropdown-item" type="button">Loaned Out</button>
+        <button class="dropdown-item" type="button">Repairing</button>
+        <button class="dropdown-item" type="button">Decommissioned</button>
+      </div>
+    </div>
+    <!-- <div>
       <label>Vehicle availability</label>
       <select id="availabilityDropdown" oninput="statusFilter()">
         <option>Any</option>
-        <option>Available</option> <!--Changed to upper case in database since it's written like that-->
+        <option>Available</option>
         <option>Loaned Out</option>
         <option>Repairing</option>
         <option>Decommissioned</option>
       </select>
-    </div>
+    </div> -->
     <div>
-      <table id = "vehicleTable" border="1px solid black">
+      <table id = "vehicleTable" class="table table-striped">
         <tr>
           <th>Stock Number</th>
           <th>Year</th>
@@ -57,12 +69,12 @@
     </div>
     <br>
     <!--Button to vehicle report-->
-    <button id="vReportButton">Vehicle Report</button>
+    <button id="vReportButton" class="btn btn-primary">Vehicle Report</button>
     <br>
     <br>
     <h2>Most recent rentals</h2>
     <div>
-      <table id="recentRentalTable" border="1px solid black">
+      <table id="recentRentalTable" class="table table-striped">
         <tr>
           <th>Stock Number</th>
           <th>Year</th>
