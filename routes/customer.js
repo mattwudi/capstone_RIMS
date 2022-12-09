@@ -59,9 +59,6 @@ router.get('/', function(req, res, next) {
     };
     return res.json(response);
   }
-
-  const response = req.body;
-  res.json(response);
   
 })
 .post('/searchCustomer', async (req, res, next) => {
