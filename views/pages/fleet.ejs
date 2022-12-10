@@ -13,7 +13,7 @@
   <div class="jumbotron">
     <h1>Fleet Modification</h1><br>
     <p>This page is used to locate, update, add or delete a vehicle in our inventory.</p><br>
-    <label for="vDropdown" id="vDropdownLbl">Vehicle: </label>
+    <label for="vDropdown" id="vDropdownLbl">Vehicle</label>
   </div>
   <div class="vForm">
       <form id="vForm">
@@ -49,7 +49,7 @@
         </div>
                  <br><br>
           
-                 <label for="status" id="statusLbl">Status: </label>
+                 <label for="status" id="statusLbl">Status</label>
           <br><br>
           <button type="button" class="btn btn-primary" onclick="javascript: send();">Submit</button>
           <button type="button" class="btn btn-secondary" onclick="javascript: edtForm();">Edit</button>
@@ -92,6 +92,7 @@
         select.title = "Vehicle Dropdown";
         select.name = "Vehicle Dropdown";
         select.id = "vDropdown";
+        select.classList.add('form-control');
         let option = document.createElement("option");
         option.value = "addVehicle";
         option.id = "add";
@@ -122,6 +123,7 @@
         select.name = "status";
         select.id = "status";
         select.className = "submitValue";
+        select.classList.add('form-control');
         option = document.createElement("option");
         option.value = "available";
         option.id = "status0";
