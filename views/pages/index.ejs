@@ -12,56 +12,56 @@
 <main>
   <div class="jumbotron">
     <h1>Welcome to RIMS</h1>
-    <p>This is our home page</p>
-  </div>
-  <p id="output"></p>
-</main>
-  <div>
-    <h2>Vehicles</h2>
-    <!--Availability dropdown-->
-    <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="availabilityDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Vehicle Availability
-      </button>
-      <div class="dropdown-menu" aria-labelledby="availabilityDropdown">
-        <button class="dropdown-item" type="button" onclick="statusFilter('Any')">Any</button>
-        <button class="dropdown-item" type="button" onclick="statusFilter('Available')">Available</button>
-        <button class="dropdown-item" type="button" onclick="statusFilter('Loaned Out')">Loaned Out</button>
-        <button class="dropdown-item" type="button" onclick="statusFilter('Repairing')">Repairing</button>
-        <button class="dropdown-item" type="button" onclick="statusFilter('Decommissioned')">Decommissioned</button>
-      </div>
-    </div>
+    <p>View vehicle inventory and status below</p>
+    <p id="output"></p>
+
     <div>
-      <table id = "vehicleTable" class="table table-striped">
-        <tr>
-          <th>Stock Number</th>
-          <th>Year</th>
-          <th>Make</th>
-          <th>Model</th>
-          <th>Color</th>
-          <th>VIN</th>
-          <th>Mileage</th>
-          <th>Status</th>
-        </tr>
-         <% vehicles.forEach(function(v) { %>
+      <h2>Vehicles</h2>
+      <!--Availability dropdown-->
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="availabilityDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Vehicle Availability
+        </button>
+        <div class="dropdown-menu" aria-labelledby="availabilityDropdown">
+          <button class="dropdown-item" type="button" onclick="statusFilter('Any')">Any</button>
+          <button class="dropdown-item" type="button" onclick="statusFilter('Available')">Available</button>
+          <button class="dropdown-item" type="button" onclick="statusFilter('Loaned Out')">Loaned Out</button>
+          <button class="dropdown-item" type="button" onclick="statusFilter('Repairing')">Repairing</button>
+          <button class="dropdown-item" type="button" onclick="statusFilter('Decommissioned')">Decommissioned</button>
+        </div>
+      </div>
+      <div>
+        <table id = "vehicleTable" class="table table-striped">
           <tr>
-            <td><%= v.stock_number %></td>
-            <td><%= v.year %></td>
-            <td><%= v.make %></td>
-            <td><%= v.model %></td>
-            <td><%= v.color %></td>
-            <td><%= v.vin %></td>
-            <td><%= v.mileage %></td>
-            <td><%= v.status %></td>
+            <th>Stock Number</th>
+            <th>Year</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Color</th>
+            <th>VIN</th>
+            <th>Mileage</th>
+            <th>Status</th>
           </tr>
-      <% }); %> 
-      </table>
+          <% vehicles.forEach(function(v) { %>
+            <tr>
+              <td><%= v.stock_number %></td>
+              <td><%= v.year %></td>
+              <td><%= v.make %></td>
+              <td><%= v.model %></td>
+              <td><%= v.color %></td>
+              <td><%= v.vin %></td>
+              <td><%= v.mileage %></td>
+              <td><%= v.status %></td>
+            </tr>
+        <% }); %> 
+        </table>
+      </div>
+      <br>
+      <!--Button to vehicle report-->
+      <button id="vReportButton" class="btn btn-primary">Vehicle Report</button>
     </div>
-    <br>
-    <!--Button to vehicle report-->
-    <button id="vReportButton" class="btn btn-primary">Vehicle Report</button>
-    <br>
-    <br>
+  </div>
+  <div>
     <h2>Recent Rentals</h2>
     <div>
       <table id="recentRentalTable" class="table table-striped">
@@ -96,6 +96,8 @@
       </table>
     </div>
   </div>
+</main>
+  
 </main>
 <script type ="text/javascript">
   //Link button to vehicle report
