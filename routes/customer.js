@@ -106,6 +106,34 @@ router.get('/', function(req, res, next) {
     };
     res.json(response);
   }
+})
+.post('/updateCustomer', async (req, res, next) => {
+  res.set({
+    "Content-Type": "application/json"
+  });
+
+  try {
+    const selectSql = `UPDATE CUSTOMERS SET f_name='${req.body.f_name}', l_name='${req.body.l_name}', 
+    phone='${req.body.phone}', address='${req.body.address}', city='${req.body.city}', state='${req.body.state}', 
+    zip_code=${req.body.zip_code}, birthday='${req.body.birthday}', license_num='${req.body.license_num}', 
+    license_exp='${req.body.license_exp}', ins_name='${req.body.ins_name}', ins_policy='${req.body.ins_policy}', 
+    ins_exp='${req.body.ins_exp}' 
+    WHERE id=${req.body.id} RETURNING id, f_name, l_name;`;
+
+    var client = await pool.connect();
+    var updateResp = await client.query(selectSql);
+    const response = {
+      results: updateResp.rowCount ? updateResp.rows[0] : null,
+      status: updateResp.rowCount ? 'success' : 'failed'
+    };
+    res.json(response);
+    return client.release();
+  } catch (err) {
+    const response = {
+      error: err
+    };
+    res.json(response);
+  }
 });
 
 module.exports = router;
