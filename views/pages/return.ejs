@@ -11,12 +11,13 @@
 
 <main>
   <div class="jumbotron">
+    <h1 id="heading">Return Agreement</h1>
     <p>
-      This page allows you to return loaned out vehicles, as well as reopen closed agreements. At the current moment you can only properly select a vehicle by stock number.
-      If you are wanting to reopen a closed agreement, you simply need to select the stock number of the vehicle in question. The grey 'Reopen' button below will become active
+      This page allows you to return loaned out vehicles, as well as reopen closed agreements. 
+      <br>At the current moment you can only properly select a vehicle by stock number.
+      <br>If you are wanting to reopen a closed agreement, you simply need to select the stock number of the vehicle in question. The grey 'Reopen' button below will become active
       if it is valid to reopen the agreement. Upon submitting the request, you will receive confirmation that the agreement was reopened.
     </p>
-    <h1 id="heading">Return Agreement</h1>
     <form>
       <div class="form-group row">
         <label for="stock_number" id="stock_numberLbl" class="col-sm-3 col-form-label">Stock Number</label>
@@ -94,7 +95,7 @@
     select.title = 'stock_number';
     select.name = 'stock_number';
     select.id = 'stock_number';
-    select.classList.add('form-control', 'col-sm-4');
+    select.classList.add('form-control');
     let option = document.createElement('option');
     option.value = 'choose';
     option.id = 'choose';
