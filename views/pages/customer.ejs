@@ -224,6 +224,7 @@
           const editBtn = document.createElement('button');
           editBtn.type = "button";
           editBtn.id = "editBtn";
+          editBtn.className = "btn btn-primary"
           editBtn.setAttribute('onclick', 'javascript: enableEdit();');
           editBtn.innerHTML = "Edit Customer";
           const custForm = document.getElementById('cForm');
@@ -248,6 +249,7 @@
     const updateBtn = document.createElement('button');
     updateBtn.type = "button";
     updateBtn.id = "updateBtn";
+    updateBtn.className = "btn btn-primary";
     updateBtn.setAttribute('onclick', 'javascript: updateCust();');
     updateBtn.innerHTML = "Update Customer";
     const custForm = document.getElementById('cForm');
@@ -257,6 +259,7 @@
     const cancelBtn = document.createElement('button');
     cancelBtn.type = "button";
     cancelBtn.id = "cancelBtn";
+    cancelBtn.className = "btn btn-primary";
     cancelBtn.setAttribute('onclick', `javascript: loadCust(custId);`);
     cancelBtn.innerHTML = "Cancel";
     custForm.appendChild(cancelBtn);
@@ -297,6 +300,7 @@
     const addBtn = document.createElement('button');
     addBtn.type = "button";
     addBtn.id = "addBtn";
+    addBtn.className = "btn btn-primary";
     addBtn.innerHTML = "Add";
     addBtn.setAttribute('onclick', 'javascript: addUser();');
     document.getElementById('cForm').appendChild(addBtn);
