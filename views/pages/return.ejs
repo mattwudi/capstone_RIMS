@@ -28,7 +28,7 @@
       </div>
       <div class="form-group row">
         <label for="agreement" class="col-sm-3 col-form-label">Agreement Number</label>
-        <input type="text" id="agreement" name="agreement" class="form-control col-sm-4" placeholder="Enter Agreement Number...">
+        <input type="text" id="agreement" name="agreement" class="form-control col-sm-4" disabled>
       </div>
       <div class="form-group row">
         <label for="customer" class="col-sm-3 col-form-label">Customer Name</label>
@@ -56,7 +56,6 @@
       </div>      
 
       <button type="button" id="save" name="save" class="btn btn-primary mb-2" onclick="javascript:send('save');">Save</button>
-      <button type="button" id="reopen" name="reopen" class="btn btn-secondary mb-2" onclick="javascript:send('reopen')"; disabled>Reopen</button>
     </form>
     
   </div>
@@ -121,7 +120,7 @@
   elementArray.push(document.getElementById('stock_number'), document.getElementById('agreement'));
   console.log(agreementArray);
   console.log(fleetArray);
-  /*
+  
   document.getElementById('stock_number').addEventListener('change', function () {
     if (this.value !== 'choose') {
       let idx = agreementArray.findIndex((obj) => {return obj.stock_number === this.value});
@@ -131,8 +130,8 @@
       document.getElementById('mileage_in').disabled = false;
       document.getElementById('status').disabled = false;
     }
-  }); */
-
+  });
+/*
   elementArray.forEach(function(e) {
     e.addEventListener('change', function() {
       if (this.value !== 'choose') {
@@ -181,7 +180,7 @@
       }
     });
   });
-
+*/
   document.getElementById('mileage_in').addEventListener('change', function() {
 
     let mileage_in = Number(document.getElementById('mileage_in').value);
