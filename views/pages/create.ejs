@@ -54,7 +54,10 @@
         </div>
         <div class="form-group row">
           <label for="stock_number" id="stock_numberLbl" class="col-sm-3 col-form-label">Vehicle</label>
-          <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter unit for loan...">
+          <select name="stock_number" id="stock_number" class="form-control col-sm-4">
+            <option value="choose">Select a vehicle to loan</option>
+          </select>
+          <!-- <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter unit for loan..."> -->
         </div>
         <div class="form-group row">
           <label for="mileage_out" class="col-sm-3 col-form-label">Current Mileage</label>
@@ -103,17 +106,7 @@
   <% } %>
 
   function stockDropdown() {
-    let select = document.createElement("select");
-    select.required = true;
-    select.title = 'stock_number';
-    select.name = 'stock_number';
-    select.id = 'stock_number';
-    select.classList.add('form-control', 'col-sm-4')
-    let option = document.createElement('option');
-    option.value = 'chooseVehicle';
-    option.id = 'choose';
-    option.text = 'Select a Vehicle';
-    select.appendChild(option);
+    let select = document.getElementById('stock_number');
 
     fleetArray.forEach(function (fa) {
       option = document.createElement('option');
@@ -133,6 +126,7 @@
       document.getElementById('stock_numberLbl').appendChild(select);
     }
   }
+  stockDropdown();
 
 
   document.getElementById('stock_number').addEventListener('change', function () {
