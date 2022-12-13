@@ -126,7 +126,7 @@
           
         </fieldset>
         <br>
-        <button type="button" class="btn btn-primary" onclick="javascript: addUser();">Add</button>
+        <button type="button" class="btn btn-primary" onclick="javascript: addUser();" id="addBtn">Add</button>
       </form>
     </div>
   </div>
@@ -208,6 +208,8 @@
       } else {
         const inFields = document.getElementsByClassName('addValue');
         for (let i = 0; i < inFields.length; i++) {
+          document.getElementById(inFields[i].id).setAttribute('readonly', true);
+          document.getElementById(inFields[i].id).style.backgroundColor = "#CCCCCC";
           if (inFields[i].type === 'date') {
             let fDate = result.results[inFields[i].name].substring(0, 10);
             inFields[i].value = fDate;
@@ -215,12 +217,94 @@
             inFields[i].value = result.results[inFields[i].name];
           }
         }
+        const addBtnRemove = document.getElementById('addBtn');
+        if (addBtnRemove) addBtnRemove.parentNode.removeChild(addBtnRemove);
+        const editBtnVerify = document.getElementById('editBtn');
+        if (!editBtnVerify) {
+          const editBtn = document.createElement('button');
+          editBtn.type = "button";
+          editBtn.id = "editBtn";
+          editBtn.setAttribute('onclick', 'javascript: enableEdit();');
+          editBtn.innerHTML = "Edit Customer";
+          const custForm = document.getElementById('cForm');
+          custForm.appendChild(editBtn);
+        }
+        const updateBtn = document.getElementById('updateBtn');
+        if (updateBtn) updateBtn.parentNode.removeChild(updateBtn);
+        const cancelBtn = document.getElementById('cancelBtn');
+        if (cancelBtn) cancelBtn.parentNode.removeChild(cancelBtn);
       }
     } else {
       output.innerHTML = "<h4>Error: Customer wasn't selected. Please select a Customer or Add a new customer.</h4>";
     }
   };
-  
+
+  const enableEdit = () => {
+    const inFields = document.getElementsByClassName('addValue');
+    for (let i = 0; i < inFields.length; i++) {
+      document.getElementById(inFields[i].id).removeAttribute('readonly');
+      document.getElementById(inFields[i].id).style.backgroundColor = null;
+    }
+    const updateBtn = document.createElement('button');
+    updateBtn.type = "button";
+    updateBtn.id = "updateBtn";
+    updateBtn.setAttribute('onclick', 'javascript: updateCust();');
+    updateBtn.innerHTML = "Update Customer";
+    const custForm = document.getElementById('cForm');
+    custForm.appendChild(updateBtn);
+    const child = document.getElementById('editBtn');
+    child.parentNode.removeChild(child);
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = "button";
+    cancelBtn.id = "cancelBtn";
+    cancelBtn.setAttribute('onclick', `javascript: loadCust(custId);`);
+    cancelBtn.innerHTML = "Cancel";
+    custForm.appendChild(cancelBtn);
+  };
+
+  const updateCust = async () => {
+    output.innerHTML = "";
+    const dataValid = await verifyInput();
+    if (dataValid) {
+      const bodyObj = {};
+      Object.assign(bodyObj, { 'id': custId });
+      const elementIds = document.getElementsByClassName("addValue");
+      for (let i = 0; i < elementIds.length; i++) {
+        Object.assign(bodyObj, { [elementIds[i].name]: elementIds[i].value });
+      }
+      const response = await fetch("/customer/updateCustomer", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(bodyObj)
+      });
+      const result = await response.json();
+
+      if (result.error) {
+        output.innerHTML = `<h4>Error: ${result.error.routine}</h4>`;
+      } else if (result.status === 'success') {
+        output.innerHTML = `<h4>Customer '${result.results.l_name}, ${result.results.f_name}'' Updated!</h4>`;
+      } else {
+        output.innerHTML = `<h4>Update to customer was not made.</h4>`;
+      }
+    }
+    const updateBtnRemove = document.getElementById('updateBtn');
+    updateBtnRemove.parentNode.removeChild(updateBtnRemove);
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.parentNode.removeChild(cancelBtn);
+    const addBtn = document.createElement('button');
+    addBtn.type = "button";
+    addBtn.id = "addBtn";
+    addBtn.innerHTML = "Add";
+    addBtn.setAttribute('onclick', 'javascript: addUser();');
+    document.getElementById('cForm').appendChild(addBtn);
+    document.getElementById('cForm').reset();
+    document.getElementById('listbox').innerHTML = '';
+    custId = 0; // Reset search ID
+  };
+
   const searchCust = async () => {
     const listbox = document.getElementById('listbox');
     listbox.innerHTML = "";
