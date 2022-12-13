@@ -21,7 +21,7 @@
       <div class="form-group row">
         <label for="stock_number" id="stock_numberLbl" class="col-sm-3 col-form-label">Stock Number</label>
         
-        <!-- <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter Stock Number..."> -->
+        <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter Stock Number...">
       </div>
       <div class="form-group row">
         <label for="agreement" class="col-sm-3 col-form-label">Agreement Number</label>
@@ -87,7 +87,7 @@
       'mileage_out': <%= agreements[i].mileage_out %>
     });
   <% } %>
-
+/*
   function stockDropdown() {
     let select = document.createElement('select');
     select.required = true;
@@ -120,7 +120,7 @@
     }
   }
   stockDropdown();
-
+*/
   var elementArray = [];
   var idx;
   var fidx;
@@ -165,9 +165,19 @@
           document.getElementById('mileage_in').disabled = false;
           document.getElementById('status').disabled = false;
           document.getElementById('reopen').disabled = true;
+          document.getElementById('save').disabled = false;
+          document.getElementById('save').style.backgroundColor = '#007bff';
+          document.getElementById('save').style.borderColor = '#007bff';
+          document.getElementById('reopen').style.backgroundColor = '#6c757d';
+          document.getElementById('reopen').style.borderColor = '#6c757d';
         } else {
           document.getElementById('heading').innerHTML = 'Reopen Agreement';
           document.getElementById('reopen').disabled = false;
+          document.getElementById('reopen').style.backgroundColor = '#007bff';
+          document.getElementById('reopen').style.borderColor = '#007bff';
+          document.getElementById('save').disabled = true;
+          document.getElementById('save').style.backgroundColor = '#6c757d';
+          document.getElementById('save').style.borderColor = '#6c757d';
         }
       
         document.getElementById('stock_number').value = agreementArray[idx].stock_number;
