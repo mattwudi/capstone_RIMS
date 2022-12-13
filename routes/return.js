@@ -12,8 +12,8 @@ const pool = new Pool({
   }
 });
 
-const fleetSql = "SELECT * FROM vehicles;";
-const agreementSql = "SELECT agreement_num, cust_id, stock_number, f_name, l_name, mileage_out, mileage_in FROM agreements INNER JOIN customers ON customers.id = agreements.cust_id WHERE date_out is not null;"; 
+const onLoanSql = "SELECT * FROM vehicles WHERE status = 'Loaned Out';";
+const agreementSql = "SELECT agreement_num, cust_id, stock_number, f_name, l_name, mileage_out, mileage_in FROM agreements INNER JOIN customers ON customers.id = agreements.cust_id WHERE date_in is null;";
 
 var onLoan;
 var agreements;
@@ -22,9 +22,11 @@ agreementDataLoad = async function() {
     try {
         const client = await pool.connect();
 
-        onLoan = (await client.query(fleetSql)).rows;
+        onLoan = (await client.query(onLoanSql)).rows;
         agreements = (await client.query(agreementSql)).rows;
         
+        console.log(onLoan);
+
         client.release();
     } catch (err) {
         console.log(err);

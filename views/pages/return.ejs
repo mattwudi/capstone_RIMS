@@ -20,8 +20,11 @@
     <form>
       <div class="form-group row">
         <label for="stock_number" id="stock_numberLbl" class="col-sm-3 col-form-label">Stock Number</label>
-        
-        <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter Stock Number...">
+
+        <select name="stock_number" id="stock_number" class="form-control col-sm-4">
+          <option value="choose">Select a vehicle</option>
+        </select>
+        <!-- <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter Stock Number..."> -->
       </div>
       <div class="form-group row">
         <label for="agreement" class="col-sm-3 col-form-label">Agreement Number</label>
@@ -87,19 +90,9 @@
       'mileage_out': <%= agreements[i].mileage_out %>
     });
   <% } %>
-/*
+
   function stockDropdown() {
-    let select = document.createElement('select');
-    select.required = true;
-    select.title = 'stock_number';
-    select.name = 'stock_number';
-    select.id = 'stock_number';
-    select.classList.add('form-control', 'col-sm-4');
-    let option = document.createElement('option');
-    option.value = 'choose';
-    option.id = 'choose';
-    option.text = 'Select a Vehicle to Return';
-    select.appendChild(option);
+    select = document.getElementById('stock_number');
 
     agreementArray.forEach(function (aa) {
       option = document.createElement('option');
@@ -120,7 +113,7 @@
     }
   }
   stockDropdown();
-*/
+
   var elementArray = [];
   var idx;
   var fidx;
