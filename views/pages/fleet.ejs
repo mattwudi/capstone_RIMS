@@ -11,33 +11,49 @@
 
 <main>
   <div class="jumbotron">
-    <h1>This is the Fleet modification page</h1><br>
+    <h1>Fleet Modification</h1><br>
     <p>This page is used to locate, update, add or delete a vehicle in our inventory.</p><br>
-    <label for="vDropdown" id="vDropdownLbl">Vehicle: </label>
+    <label for="vDropdown" id="vDropdownLbl">Vehicle</label>
   </div>
   <div class="vForm">
       <form id="vForm">
-          <label for="stock_number">Stock Number: </label>
-          <input type="text" id="stock_number" class="submitValue" name="stockNum" onkeypress="return AvoidSpace(event)" value="">
-          <label for="year">Year: </label>
-          <input type="text" id="year" class="submitValue" name="year" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
-                 minlength="4" maxlength="4" value=""><br><br>
-          <label for="make">Make: </label>
-          <input type="text" id="make" class="submitValue" name="make" value="">
-          <label for="model">Model: </label>
-          <input type="text" id="model" class="submitValue" name="model" value="">
-          <label for="color">Color: </label>
-          <input type="text" id="color" class="submitValue" name="color" value=""><br><br>
-          <label for="vin">VIN: </label>
-          <input type="text" id="vin" class="submitValue" name="vin" maxlength="17" onkeypress="return AvoidSpace(event)" value="">
-          <label for="mileage">Mileage: </label>
-          <input type="text" id="mileage" class="submitValue" name="mileage" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
-                 value=""><br><br>
-          <label for="status" id="statusLbl">Status: </label>
+        <div class="form-group">
+          <label for="stock_number">Stock Number</label>
+          <input type="text" class="form-control submitValue" id="stock_number" name="stockNum" onkeypress="return AvoidSpace(event)" value="">
+        </div>
+        <div class="form-group">
+          <label for="year">Year</label>
+          <input type="text" class="form-control submitValue" id="year" name="year" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
+                 minlength="4" maxlength="4" value="">
+        </div>
+        <div class="form-group">
+          <label for="make">Make</label>
+          <input type="text" class="form-control submitValue" id="make" name="make" value="">
+        </div>
+        <div class="form-group">
+          <label for="model">Model</label>
+          <input type="text" class="form-control submitValue" id="model" name="model" value="">
+        </div>
+        <div class="form-group">
+          <label for="color">Color</label>
+          <input type="text" class="form-control submitValue" id="color" name="color" value="">
+        </div> 
+        <div class="form-group">
+          <label for="vin">VIN</label>
+          <input type="text" class="form-control submitValue" id="vin" name="vin" maxlength="17" onkeypress="return AvoidSpace(event)" value="">
+        </div> 
+        <div class="form-group">
+          <label for="mileage">Mileage</label>
+          <input type="text" class="form-control submitValue" id="mileage" name="mileage" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
+                 value="">
+        </div>
+                 <br><br>
+          
+                 <label for="status" id="statusLbl">Status</label>
           <br><br>
-          <button type="button" onclick="javascript: send();">Submit</button>
-          <button type="button" onclick="javascript: edtForm();">Edit</button>
-          <button type="button" onclick="javascript: delRecord();">Delete Record</button>
+          <button type="button" class="btn btn-primary" onclick="javascript: send();">Submit</button>
+          <button type="button" class="btn btn-secondary" onclick="javascript: edtForm();">Edit</button>
+          <button type="button" class="btn btn-secondary" onclick="javascript: delRecord();">Delete Record</button>
 
       </form>
   </div>
@@ -76,6 +92,7 @@
         select.title = "Vehicle Dropdown";
         select.name = "Vehicle Dropdown";
         select.id = "vDropdown";
+        select.classList.add('form-control');
         let option = document.createElement("option");
         option.value = "addVehicle";
         option.id = "add";
@@ -106,6 +123,7 @@
         select.name = "status";
         select.id = "status";
         select.className = "submitValue";
+        select.classList.add('form-control');
         option = document.createElement("option");
         option.value = "available";
         option.id = "status0";

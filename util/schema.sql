@@ -40,13 +40,16 @@ CREATE TABLE users (
 );
 
 CREATE TABLE agreements (
-  agreement_num serial PRIMARY KEY,
-  cust_id int NOT NULL,
-  stock_number text NOT NULL,
-  date_out date NOT NULL,
-  date_in date NULL,
-  mileage_out int NOT NULL,
-  mileage_in int NULL
+  agreement_num serial PRIMARY KEY, 
+  cust_id int NOT NULL, 
+  stock_number text NOT NULL, 
+  date_out DATE NOT NULL,
+  date_in DATE, 
+  mileage_out int NOT NULL, 
+  mileage_in int,
+
+  CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCES customers(id),
+  CONSTRAINT fk_stock_number FOREIGN KEY(stock_number) REFERENCES vehicles(stock_number)
 );
 
 INSERT INTO vehicles VALUES
@@ -85,6 +88,26 @@ INSERT INTO customers (f_name, l_name, phone, address, city, state, zip_code,
   '1995-08-12','W300-5569-5292-02','2030-08-12','State Farm','363 5274-A06-49','2023-01-06'),
   ('Tyler','Grant','(715)-543-9900', '398 Trippy Ln', 'Chippewa Falls', 'WI','54729',
   '1991-12-12','P488-9932-4542-03','2029-12-12','State Farm','567 2139-E84-27','2023-03-14');
+
+INSERT INTO customers (f_name, l_name, phone, address, city, state, zip_code,
+  birthday, license_num, license_exp, ins_name, ins_policy, ins_exp)
+  VALUES ('Connor','MacNicol','(715)-944-7377','123 Main St','Eau Claire','WI','54701',
+  '1997-05-30','M200-5569-5292-02','2027-08-12','State Farm','361 5276-M06-49','2023-01-09');
+
+INSERT INTO agreements (cust_id, stock_number, date_out, date_in, mileage_out, mileage_in)
+VALUES ('1','B8166','2022-11-25','2022-11-26', 86276, 86303);
+
+INSERT INTO agreements (cust_id, stock_number, date_out, date_in, mileage_out, mileage_in)
+VALUES ('1','B8021','2022-11-11','2022-11-13', 68017, 68028);
+
+INSERT INTO agreements (cust_id, stock_number, date_out, date_in, mileage_out, mileage_in)
+VALUES ('2','B8166','2022-10-09','2022-11-05', 80111, 86275);
+
+INSERT INTO agreements (cust_id, stock_number, date_out, date_in, mileage_out, mileage_in)
+VALUES ('2','B8021','2022-09-09','2022-11-10', 66785, 68016);
+
+INSERT INTO agreements (cust_id, stock_number, date_out, date_in, mileage_out, mileage_in)
+VALUES ('2','B7966','2022-08-17','2022-08-26', 58111, 58239);
 
 INSERT INTO agreements (agreement_num, cust_id, stock_number, date_out, date_in, mileage_out, mileage_in)
 VALUES

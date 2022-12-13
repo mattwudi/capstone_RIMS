@@ -11,15 +11,22 @@
 
 <main>
   <div class="jumbotron">
-    <h1>Return Agreement</h1>
+    <h1 id="heading">Return Agreement</h1>
+    <p>
+      This page allows you to return loaned out vehicles, as well as reopen closed agreements. 
+      <br>At the current moment you can only properly select a vehicle by stock number.
+      <br>If you are wanting to reopen a closed agreement, you simply need to select the stock number of the vehicle in question. The grey 'Reopen' button below will become active
+      if it is valid to reopen the agreement. Upon submitting the request, you will receive confirmation that the agreement was reopened.
+    </p>
     <form>
       <div class="form-group row">
         <label for="stock_number" id="stock_numberLbl" class="col-sm-3 col-form-label">Stock Number</label>
-        <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter Stock Number...">
+        
+        <!-- <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter Stock Number..."> -->
       </div>
       <div class="form-group row">
         <label for="agreement" class="col-sm-3 col-form-label">Agreement Number</label>
-        <input type="text" id="agreement" name="agreement" class="form-control col-sm-4" disabled>
+        <input type="text" id="agreement" name="agreement" class="form-control col-sm-4" placeholder="Enter Agreement Number...">
       </div>
       <div class="form-group row">
         <label for="customer" class="col-sm-3 col-form-label">Customer Name</label>
@@ -46,7 +53,8 @@
         </select>
       </div>      
 
-      <button type="button" id="save" name="save" class="btn btn-primary mb-2" onclick="javascript:send();">Save</button>
+      <button type="button" id="save" name="save" class="btn btn-primary mb-2" onclick="javascript:send('save');">Save</button>
+      <button type="button" id="reopen" name="reopen" class="btn btn-secondary mb-2" onclick="javascript:send('reopen')"; disabled>Reopen</button>
     </form>
     
   </div>
@@ -87,7 +95,7 @@
     select.title = 'stock_number';
     select.name = 'stock_number';
     select.id = 'stock_number';
-    select.classList.add('form-control', 'col-sm-4');
+    select.classList.add('form-control');
     let option = document.createElement('option');
     option.value = 'choose';
     option.id = 'choose';
@@ -112,9 +120,16 @@
       document.getElementById('stock_numberLbl').appendChild(select);
     }
   }
-  // stockDropdown();
+  stockDropdown();
 
+  var elementArray = [];
+  var idx;
+  var fidx;
 
+  elementArray.push(document.getElementById('stock_number'), document.getElementById('agreement'));
+  console.log(agreementArray);
+  console.log(fleetArray);
+  /*
   document.getElementById('stock_number').addEventListener('change', function () {
     if (this.value !== 'choose') {
       let idx = agreementArray.findIndex((obj) => {return obj.stock_number === this.value});
@@ -124,6 +139,45 @@
       document.getElementById('mileage_in').disabled = false;
       document.getElementById('status').disabled = false;
     }
+  }); */
+
+  elementArray.forEach(function(e) {
+    e.addEventListener('change', function() {
+      if (this.value !== 'choose') {
+        if (e === document.getElementById('stock_number')) {
+          idx = agreementArray.findIndex((obj) => {return obj.stock_number === this.value});
+          fidx = fleetArray.findIndex((obj) => {return obj.stock_number === this.value});
+          
+        } else if (e === document.getElementById('agreement')) {
+          idx = agreementArray.findIndex((obj) => {return obj.agreement_num === Number(this.value)});
+          fidx = agreementArray.findIndex((obj) => {
+            console.log(obj);
+            if (Number(this.value) === obj.agreement_num){
+              return obj.stock_number
+            }
+          });
+        }
+
+        console.log(fleetArray[fidx]);
+        console.log(fleetArray[fidx].status);
+
+        if (fleetArray[fidx].status == 'Loaned Out') {
+          document.getElementById('heading').innerHTML = 'Return Agreement';
+          document.getElementById('mileage_in').disabled = false;
+          document.getElementById('status').disabled = false;
+          document.getElementById('reopen').disabled = true;
+        } else {
+          document.getElementById('heading').innerHTML = 'Reopen Agreement';
+          document.getElementById('reopen').disabled = false;
+        }
+      
+        document.getElementById('stock_number').value = agreementArray[idx].stock_number;
+        document.getElementById('agreement').value = agreementArray[idx].agreement_num;
+        document.getElementById('mileage_out').value = agreementArray[idx].mileage_out;
+        document.getElementById('customer').value = agreementArray[idx].first_name + " " + agreementArray[idx].last_name;
+        
+      }
+    });
   });
 
   document.getElementById('mileage_in').addEventListener('change', function() {
@@ -141,7 +195,7 @@
   })
   
   const output = document.getElementById('output');
-  const send = async function() {
+  const send = async function(buttonId) {
     const response = await fetch("/return", {
       method: 'POST',
       headers: {
@@ -149,6 +203,7 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        button: buttonId,
         agreement_num: document.getElementById('agreement').value,
         stock_number: document.getElementById('stock_number').value,
         mileage_in: document.getElementById('mileage_in').value,
@@ -161,7 +216,7 @@
       output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
     } else {
       console.log(result);
-      output.innerHTML = 'Vehicle was succesfully returned!';
+      output.innerHTML = result.message;
     }
   }
 </script>

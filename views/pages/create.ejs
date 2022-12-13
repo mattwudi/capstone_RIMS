@@ -83,10 +83,6 @@
         
         <button type="button" id="save" name="save" class="btn btn-primary mb-2" onclick="javascript:send();">Save</button>
       </form>
-
-      
-      
-      
   </div>
   <p id="output"></p>
 </main>
@@ -148,13 +144,7 @@
 
   const output = document.getElementById("output");
   const send = async function() {
-    const response = await fetch("/create", {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+    const jsonForm = JSON.stringify({
         f_name: document.getElementById("fname").value,
         l_name: document.getElementById("lname").value,
         address: document.getElementById("address").value,
@@ -171,15 +161,25 @@
         ins_name: document.getElementById("ins_name").value,
         ins_policy: document.getElementById("ins_policy").value,
         ins_exp: document.getElementById("ins_exp").value
-      })
+      });
+
+    const response = await fetch("/create", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: jsonForm
     });
     const result = await response.json();
 
+
+    encodeJson = encodeURIComponent(jsonForm);
     if (result.error) {
       output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
     } else {
       console.log(result);
-      output.innerHTML = 'Agreement Created!';
+      output.innerHTML = 'Agreement Created!<br><a href="printagreement?form='+encodeJson+'" target="_blank" class="btn btn-secondary mb-2" role="button">Print Agreement</a>'
     }
   }
 
