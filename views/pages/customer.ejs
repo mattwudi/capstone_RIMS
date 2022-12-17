@@ -44,7 +44,7 @@
     <div class="cForm right">
       <form id="cForm">
         <fieldset>
-          <legend>Enter Customer Information</legend>
+          <legend id="custInfoHeader">Enter New Customer Information</legend>
           <div class="form-group">
             <div class="col-9">
               <label for="fName">First Name</label>
@@ -234,6 +234,7 @@
         if (updateBtn) updateBtn.parentNode.removeChild(updateBtn);
         const cancelBtn = document.getElementById('cancelBtn');
         if (cancelBtn) cancelBtn.parentNode.removeChild(cancelBtn);
+        document.getElementById('custInfoHeader').innerHTML = 'Customer Information';
       }
     } else {
       output.innerHTML = "<h4>Error: Customer wasn't selected. Please select a Customer or Add a new customer.</h4>";
@@ -263,6 +264,7 @@
     cancelBtn.setAttribute('onclick', `javascript: loadCust(custId);`);
     cancelBtn.innerHTML = "Cancel";
     custForm.appendChild(cancelBtn);
+    document.getElementById('custInfoHeader').innerHTML = 'Edit Exisitng Customer Information';
   };
 
   const updateCust = async () => {
@@ -306,6 +308,7 @@
     document.getElementById('cForm').appendChild(addBtn);
     document.getElementById('cForm').reset();
     document.getElementById('listbox').innerHTML = '';
+    document.getElementById('custInfoHeader').innerHTML = 'Enter New Customer Information';
     custId = 0; // Reset search ID
   };
 
