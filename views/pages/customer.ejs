@@ -317,7 +317,7 @@
     listbox.innerHTML = "";
     output.innerHTML = "";
     const bodyObj = {};
-    const elementIds = document.getElementsByClassName("form-control");
+    const elementIds = document.getElementsByClassName("searchValue");
       for (let i = 0; i < elementIds.length; i++) {
         Object.assign(bodyObj, { [elementIds[i].name]: elementIds[i].value });
     }
