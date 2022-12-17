@@ -90,7 +90,7 @@
           <td><%= r.id %></td>
           <td><%= r.f_name %></td>
           <td><%= r.l_name %></td>
-          <td><%= r.date_out %></td>
+          <td><%= r.date_out.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})  %></td>
         </tr>
         <% }); %>
       </table>
