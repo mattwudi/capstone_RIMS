@@ -319,10 +319,10 @@
             let error = hasError(elementIds[i]);
 
             if (error) {
-                showError(event.target, error);
+                showError(elementIds[i], error);
                 dataValid = false;
             } else {
-                removeError(event.target);
+                removeError(elementIds[i]);
             }
         }
         return dataValid;
