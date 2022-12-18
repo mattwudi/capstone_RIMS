@@ -20,33 +20,31 @@
       <form id="vForm">
         <div class="form-group">
           <label for="stock_number">Stock Number</label>
-          <input type="text" class="form-control submitValue" id="stock_number" name="stockNum" onkeypress="return AvoidSpace(event)" value="">
+          <input type="text" class="form-control submitValue validate" id="stock_number" name="stockNum" pattern="^[a-zA-Z0-9]*$" value="" required>
         </div>
         <div class="form-group">
-          <label for="year">Year</label>
-          <input type="text" class="form-control submitValue" id="year" name="year" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
-                 minlength="4" maxlength="4" value="">
+          <label for="year">Year - 4 digit (YYYY)</label>
+          <input type="number" class="form-control submitValue validate" id="year" name="year" minLength="4" maxLength="4" min="1999" value="" required>
         </div>
         <div class="form-group">
           <label for="make">Make</label>
-          <input type="text" class="form-control submitValue" id="make" name="make" value="">
+          <input type="text" class="form-control submitValue validate" id="make" name="make" value="" required>
         </div>
         <div class="form-group">
           <label for="model">Model</label>
-          <input type="text" class="form-control submitValue" id="model" name="model" value="">
+          <input type="text" class="form-control submitValue validate" id="model" name="model" value="" required>
         </div>
         <div class="form-group">
           <label for="color">Color</label>
-          <input type="text" class="form-control submitValue" id="color" name="color" value="">
+          <input type="text" class="form-control submitValue validate" id="color" name="color" value="" required>
         </div> 
         <div class="form-group">
           <label for="vin">VIN</label>
-          <input type="text" class="form-control submitValue" id="vin" name="vin" maxlength="17" onkeypress="return AvoidSpace(event)" value="">
+          <input type="text" class="form-control submitValue validate" id="vin" name="vin" minLength="17" maxLength="17" pattern="^[a-zA-Z0-9]*$" value="" required>
         </div> 
         <div class="form-group">
           <label for="mileage">Mileage</label>
-          <input type="text" class="form-control submitValue" id="mileage" name="mileage" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
-                 value="">
+          <input type="number" class="form-control submitValue validate" id="mileage" name="mileage" min="1" pattern="[^\s]+" value="" required>
         </div>
                  <br><br>
           
@@ -82,6 +80,7 @@
     const closeButton = document.querySelector(".close-button");
     const delText = document.getElementById('deleteText');
     const delBtn = document.getElementById('confirmDel');
+    document.getElementById('year').setAttribute('max', new Date().getFullYear() + 1);
 
     const updateFleetArray = async function () {
         if (fleetArray.length) {
@@ -101,6 +100,93 @@
         <% } %>
     };
     updateFleetArray();
+
+    var hasError = function (field) {
+
+        if (field.disabled || ['file', 'reset', 'submit', 'button'].includes(field.type)) return;
+
+        const validity = field.validity;
+
+        if (validity.valueMissing || /^[\s]+/.test(field.value)) return '* This field is required.';
+        if (validity.patternMismatch) return '* Only letters or numbers allowed. No spaces or other characters.';
+        if (validity.badInput) return '* Please enter a valid number';
+        if (validity.tooShort) return '* Entered data not long enough.';
+        if (validity.tooLong) return '* Entered data is too long';
+        if (field.type === 'number' && field.value.substring(0, 1) === '0') return '* Number cannot begin with 0.';
+        if (field.maxLength > 1 || field.minLength > 1) {
+            if (field.minLength > field.value.length) return `* Value entered isn't long enough`;
+            if (field.maxLength < field.value.length) return `* Value entered is too long`;
+        }
+        if (validity.rangeUnderflow) return `* Value is too low. Please enter a year between 1999 and ${new Date().getFullYear() + 1}.`;
+        if (validity.rangeOverflow) return `* Value is too high. Please enter a year between 1999 and ${new Date().getFullYear() + 1}.`;
+
+        return false;
+    };
+
+    var showError = function (field, error) {
+        // Add error class to field
+        field.classList.add('error');
+
+        // Get field id or name
+        var id = field.id || field.name;
+        if (!id) return;
+
+        // Check if error message field already exists
+        // If not, create one
+        var message = field.form.querySelector('.error-message#error-for-' + id);
+        if (!message) {
+            message = document.createElement('div');
+            message.className = 'error-message';
+            message.id = 'error-for-' + id;
+            field.parentNode.insertBefore(message, field.nextSibling);
+        }
+
+        // Add ARIA role to the field
+        field.setAttribute('aria-describedby', 'error-for-' + id);
+
+        // Update error message
+        message.innerHTML = error;
+
+        // Show error message
+        message.style.display = 'block';
+        message.style.visibility = 'visible';
+    };
+
+    var removeError = function (field) {
+
+        // Remove error class to field
+        field.classList.remove('error');
+
+        // Remove ARIA role from the field
+        field.removeAttribute('aria-describedby');
+
+        // Get field id or name
+        var id = field.id || field.name;
+        if (!id) return;
+
+        // Check if an error message is in the DOM
+        var message = field.form.querySelector('.error-message#error-for-' + id + '');
+        if (!message) return;
+
+        // If so, hide it
+        message.innerHTML = '';
+        message.style.display = 'none';
+        message.style.visibility = 'hidden';
+    };
+
+    document.addEventListener('blur', function (event) {
+
+        if (event.target && (!event.target.classList || !event.target.classList.contains('validate'))) return;
+
+        let error = hasError(event.target);
+        
+        if (error) {
+            showError(event.target, error);
+        } else {
+            removeError(event.target);
+        }
+
+    }, true);
 
     function populateDropdown() {
         let select = document.createElement("select");
@@ -192,6 +278,7 @@
                     if (elementIds[i].tagName !== 'SELECT') {
                         document.getElementById(elementIds[i].id).value = null;
                         document.getElementById(elementIds[i].id).style.backgroundColor = null;
+                        document.getElementById(elementIds[i].id).removeAttribute('readonly');
                     } else {
                         document.getElementById(elementIds[i].id).value = 'available';
                         document.getElementById(elementIds[i].id).style.backgroundColor = null;
@@ -227,20 +314,17 @@
 
     const verifyInput = async function () {
         let dataValid = true;
-        const elementIds = document.getElementsByClassName("submitValue");
+        const elementIds = document.getElementsByClassName('validate');
         for (let i = 0; i < elementIds.length; i++) {
-            let elementId = document.getElementById(elementIds[i].id);
-            let elementValue = elementId.value.trim();
-            if (elementValue === '' || elementValue === null) {
-                elementId.style.backgroundColor = "#ff6666";
+            let error = hasError(elementIds[i]);
+
+            if (error) {
+                showError(event.target, error);
                 dataValid = false;
             } else {
-                elementId.style.backgroundColor = null;
+                removeError(event.target);
             }
         }
-        if (!dataValid) {
-            alert("Please fill out all fields!");
-        } 
         return dataValid;
     };
 

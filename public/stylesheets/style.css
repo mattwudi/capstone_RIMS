@@ -100,3 +100,12 @@ footer {
   display: block;
 }
 
+.error {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-style: italic;
+  padding-top: 5px;
+}
