@@ -31,7 +31,11 @@ availableVehicleLoad = async function() {
 /* GET create page. */
 router.get('/', async function(req, res, next) {
   await availableVehicleLoad();
-  res.render('pages/create', {title: 'Open Agreement', 'fleet':available});
+  if(req.isAuthenticated()){
+    res.render('pages/create', {title: 'Open Agreement', 'fleet':available});
+  } else {
+    res.render('pages/login');
+  }
 }).post("/", async(req, res) => {
   res.set({
     "Content-Type": "application/json"

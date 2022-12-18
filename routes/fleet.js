@@ -12,7 +12,11 @@ const pool = new Pool({
 router
     .get('/', function (req, res, next) {
         try {
-            res.render('pages/fleet', { title: 'Manage Fleet', "fleet": req.app.locals.fleet });
+            if(req.isAuthenticated()){
+                res.render('pages/fleet', { title: 'Manage Fleet', "fleet": req.app.locals.fleet });
+              } else {
+                res.render('pages/login');
+              }
         } catch (err) {
             console.log(err);
         }

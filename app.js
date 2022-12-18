@@ -9,7 +9,6 @@ var { Pool } = require("pg");
 var bcrypt = require('bcrypt');
 var session = require('express-session');
 var flash = require('express-flash');
-var LocalStrategy = require('passport-local').Strategy;
 var passport = require('passport');
 const vehicleSelectQry = `SELECT * FROM VEHICLES ORDER BY YEAR ASC;`;
 const pool = new Pool({
@@ -19,6 +18,10 @@ const pool = new Pool({
     }
 });
 var fleet;
+
+const initializePassport = require("./passportConfig");
+
+initializePassport(passport);
 
 startupDataLoad = async function() {
     try {
@@ -76,11 +79,10 @@ app.use(session({
 
 app.use(passport.session());
 app.use(passport.initialize());
-
 app.use(flash());
 
-//Register page authentication/validation
 
+//Register page authentication/validation
 app.post('/register', async (req, res) => {
   let {name, email, password, password2} = req.body;
 
@@ -142,65 +144,13 @@ app.post('/register', async (req, res) => {
   }
 });
 
-var authenticateUser = (email, password, done) => {
-  pool.query(
-    `SELECT * FROM users WHERE email = $1`, [email], (err, results)=>{
-      if (err) {
-        throw err;
-      }
-
-      console.log(results.rows);
-
-      if(results.rows.length > 0){
-        const user = results.rows[0];
-
-        bcrypt.compare(password, user.password, (err, isMatch)=>{
-          if (err){
-            throw err
-          }
-
-          if (isMatch){
-            return done(null, user);
-          } else {
-            return done(null, false, {message: "Password is not correct. Please try again."});
-          }
-
-        });
-      } else {
-        return done(null, false, {message: "Email is not registered. Please register."});
-      }
-    }
-  )
-}
-
 app.post("/login", passport.authenticate('local', {
   successRedirect: "/", 
   failureRedirect: "/login",
-  failureFlash: true
+  failureFlash: true,
   })
 );
 
-function initialize (passport){
-  passport.use(
-    new LocalStrategy({
-      usernameField: 'email', 
-      passwordField: 'password'
-    }, authenticateUser
-    )
-  );
-
-  passport.serializeUser((user, done)=> done(null, user.userID));
-
-  passport.deserializeUser((id, done) => {
-    pool.query(`SELECT * FROM users WHERE userID = $1`, [id], (err, results) => {
-      if (err) {
-        return done(err);
-      }
-      console.log(`ID is ${results.rows[0].id}`);
-      return done(null, results.rows[0]);
-    });
-  });
-}
 
 app.use(logger('dev'));
 app.use(express.json());

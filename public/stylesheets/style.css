@@ -109,3 +109,6 @@ footer {
   font-style: italic;
   padding-top: 5px;
 }
+.navRight {
+  float: right;
+}

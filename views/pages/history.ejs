@@ -11,10 +11,183 @@
 
 <main>
   <div class="jumbotron">
-    <h1>Customer History</h1>
-    <p></p>
+    <h1>Customer Agreement History</h1>
+    <p id = "output"></p>
+
+    <div class="form-group">
+      <form id="searchHistory" >
+        <label for="searchFirstName">First Name: </label>
+        <input type="text" id="searchFirstName" name="f_name" class = "searchHistoryVal form-control"  required>
+
+        <br>
+
+        <label for="searchLastName">Last Name: </label>
+        <input type="text" id="searchLastName" name="l_name" class = "searchHistoryVal form-control" required>
+
+        <br><br>
+
+        <button type="button" onclick="javascript: searchHistory();" class="btn btn-primary">Search History</button>
+
+        <button type="button" onclick="javascript: clearHistory();" class="btn btn-primary">Clear History</button> 
+
+      </form>
+    </div>
   </div>
+
+  <div>
+    <table id="searchTable" class = "table table-striped">
+      <tr>
+        <th>Stock Number</th>
+        <th>Year</th>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Color</th>
+        <th>VIN</th>
+        <th>Mileage</th>
+        <th>Customer ID</th>
+        <th>Customer First Name</th>
+        <th>Customer Last Name</th>
+        <th>Date Out</th>
+      </tr>
+    </table>
+  </div>
+
+  <br><br>
+  
 </main>
+
+<script type="text/javascript">
+
+  const clearHistory = async () => {
+    location.reload();
+  }
+
+  const searchHistory = async () => {
+
+    const output = document.getElementById('output');
+
+    output.innerHTML = "";
+
+    const bodyObj = {};
+
+    const elementIds = document.getElementsByClassName("searchHistoryVal");
+
+      for (let i = 0; i < elementIds.length; i++) {
+        Object.assign(bodyObj, { [elementIds[i].name]: elementIds[i].value });
+    }
+
+    const response = await fetch("/history/searchHistory", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(bodyObj)
+    });
+
+
+    const result = await response.json();
+
+    if (result.error) {
+
+      output.innerHTML = `<h3>Error: ${result.error.routine}</h3>`;
+
+
+    } else if (result.results && result.results.length) {
+
+      const testOutput = document.getElementById('testOutput');
+
+      const searchTable = document.getElementById('searchTable');
+
+      for (let i=0; i < result.results.length; i++) {
+
+        const row = document.createElement('tr');
+        row.className = "rowOutput";
+
+        allRows = document.getElementsByClassName('rowOutput');
+
+        const stockNumber = result.results[i].stock_number;
+        const stockOutput = document.createElement('td');
+        stockOutput.innerText = stockNumber;
+        row.appendChild(stockOutput);
+        searchTable.appendChild(row);
+
+        const year = result.results[i].year;
+        const yearOutput = document.createElement('td');
+        yearOutput.innerText = year;
+        row.appendChild(yearOutput);
+        searchTable.appendChild(row);
+
+        const make = result.results[i].make;
+        const makeOutput = document.createElement('td');
+        makeOutput.innerText = make;
+        row.appendChild(makeOutput);
+        searchTable.appendChild(row);
+
+        const model = result.results[i].model;
+        const modelOutput = document.createElement('td');
+        modelOutput.innerText = model;
+        row.appendChild(modelOutput);
+        searchTable.appendChild(row);
+
+        const color = result.results[i].color;
+        const colorOutput = document.createElement('td');
+        colorOutput.innerText = color;
+        row.appendChild(colorOutput);
+        searchTable.appendChild(row);
+
+        const vin = result.results[i].vin;
+        const vinOutput = document.createElement('td');
+        vinOutput.innerText = vin;
+        row.appendChild(vinOutput);
+        searchTable.appendChild(row);
+
+        const mileage = result.results[i].mileage;
+        const mileageOutput = document.createElement('td');
+        mileageOutput.innerText = mileage;
+        row.appendChild(mileageOutput);
+        searchTable.appendChild(row);
+
+        const id = result.results[i].id;
+        const idOutput = document.createElement('td');
+        idOutput.innerText = id;
+        row.appendChild(idOutput);
+        searchTable.appendChild(row);
+
+        const firstName = result.results[i].f_name;
+        const firstOutput = document.createElement('td');
+        firstOutput.innerText = firstName;
+        row.appendChild(firstOutput);
+        searchTable.appendChild(row);
+
+        const lastName = result.results[i].l_name;
+        const lastOutput = document.createElement('td');
+        lastOutput.innerText = lastName;
+        row.appendChild(lastOutput);
+        searchTable.appendChild(row);
+
+        const dateOut = result.results[i].date_out.substring(0,10);
+        const dateOutput = document.createElement('td');
+        dateOutput.innerText = dateOut;
+        row.appendChild(dateOutput);
+        searchTable.appendChild(row);
+
+      }
+
+      const spaceBreak = document.createElement('br');
+      searchTable.appendChild(spaceBreak);
+
+    } else {
+
+      output.innerHTML = "<h4>No customers with that name.</h4>";
+
+    }
+
+  };
+
+
+
+</script>
 
 <footer>
   <%- include('../partials/footer'); %>
