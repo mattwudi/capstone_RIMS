@@ -27,7 +27,13 @@ router.get('/', async (req, res) => {
       "vehicles": vehicles.rows,
       "recentRentals": recentRentals.rows
     };
-    res.render('pages/index', args);
+
+    if(req.isAuthenticated()){
+      res.render('pages/index', args);
+    } else {
+      res.render('pages/login');
+    }
+    
     client.release();
   } catch (err) {
     console.error(err);

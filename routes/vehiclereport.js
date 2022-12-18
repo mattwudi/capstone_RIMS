@@ -20,7 +20,12 @@ router.get('/', async (req, res) => {
             title: 'Express',
             "vehicles": vehicles.rows
         }
-        res.render('pages/vehiclereport', args);
+
+        if(req.isAuthenticated()){
+            res.render('pages/vehiclereport', args);
+        } else {
+            res.render('pages/login');
+        }
     } catch (err) {
         console.error(err);
         res.set({

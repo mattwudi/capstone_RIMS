@@ -61,4 +61,6 @@ footer {
   padding-top: 10px;
 }
 
-
+.navRight {
+  float: right;
+}

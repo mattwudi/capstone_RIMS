@@ -10,7 +10,11 @@ const pool = new Pool({
 
 // GET about page
 router.get('/', function(req, res, next) {
-  res.render('pages/customer', {title: 'Customer Page'});
+  if(req.isAuthenticated()){
+    res.render('pages/customer', {title: 'Customer Page'});
+  } else {
+    res.render('pages/login');
+  }
 })
 .post('/addUser', async function (req, res, next) {
   res.set({
