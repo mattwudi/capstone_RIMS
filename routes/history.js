@@ -12,7 +12,11 @@ const pool = new Pool({
 router.get('/', async (req, res) => {
   try{
 
-    res.render('pages/history');
+    if(req.isAuthenticated()){
+      res.render('pages/history');
+    } else {
+      res.render('pages/login');
+    }
 
   } catch (err){
       res.set({ 

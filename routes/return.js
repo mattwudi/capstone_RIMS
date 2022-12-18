@@ -36,7 +36,11 @@ agreementDataLoad = async function() {
 /* GET return page. */
 router.get('/', async function(req, res, next) {
   await agreementDataLoad();
-  res.render('pages/return', {title: 'Return', 'onLoan': onLoan, 'agreements': agreements});
+  if(req.isAuthenticated()){
+    res.render('pages/return', {title: 'Return', 'onLoan': onLoan, 'agreements': agreements});
+  } else {
+    res.render('pages/login');
+  }
 }).post('/', async(req, res) => {
   res.set({
     "Content-Type": "application/json"
