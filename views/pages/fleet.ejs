@@ -15,37 +15,36 @@
     <p>This page is used to locate, update, add or delete a vehicle in our inventory.</p><br>
     <label for="vDropdown" id="vDropdownLbl">Vehicle</label>
   </div>
+  <p id="output"></p>
   <div class="vForm">
       <form id="vForm">
         <div class="form-group">
           <label for="stock_number">Stock Number</label>
-          <input type="text" class="form-control submitValue" id="stock_number" name="stockNum" onkeypress="return AvoidSpace(event)" value="">
+          <input type="text" class="form-control submitValue validate" id="stock_number" name="stockNum" pattern="^[a-zA-Z0-9]*$" value="" required>
         </div>
         <div class="form-group">
-          <label for="year">Year</label>
-          <input type="text" class="form-control submitValue" id="year" name="year" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
-                 minlength="4" maxlength="4" value="">
+          <label for="year">Year - 4 digit (YYYY)</label>
+          <input type="number" class="form-control submitValue validate" id="year" name="year" minLength="4" maxLength="4" min="1999" value="" required>
         </div>
         <div class="form-group">
           <label for="make">Make</label>
-          <input type="text" class="form-control submitValue" id="make" name="make" value="">
+          <input type="text" class="form-control submitValue validate" id="make" name="make" value="" required>
         </div>
         <div class="form-group">
           <label for="model">Model</label>
-          <input type="text" class="form-control submitValue" id="model" name="model" value="">
+          <input type="text" class="form-control submitValue validate" id="model" name="model" value="" required>
         </div>
         <div class="form-group">
           <label for="color">Color</label>
-          <input type="text" class="form-control submitValue" id="color" name="color" value="">
+          <input type="text" class="form-control submitValue validate" id="color" name="color" value="" required>
         </div> 
         <div class="form-group">
           <label for="vin">VIN</label>
-          <input type="text" class="form-control submitValue" id="vin" name="vin" maxlength="17" onkeypress="return AvoidSpace(event)" value="">
+          <input type="text" class="form-control submitValue validate" id="vin" name="vin" minLength="17" maxLength="17" pattern="^[a-zA-Z0-9]*$" value="" required>
         </div> 
         <div class="form-group">
           <label for="mileage">Mileage</label>
-          <input type="text" class="form-control submitValue" id="mileage" name="mileage" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '');" 
-                 value="">
+          <input type="number" class="form-control submitValue validate" id="mileage" name="mileage" min="1" pattern="[^\s]+" value="" required>
         </div>
                  <br><br>
           
@@ -53,11 +52,21 @@
           <br><br>
           <button type="button" class="btn btn-primary" onclick="javascript: send();">Submit</button>
           <button type="button" class="btn btn-secondary" onclick="javascript: edtForm();">Edit</button>
-          <button type="button" class="btn btn-secondary" onclick="javascript: delRecord();">Delete Record</button>
+          <button type="button" class="btn btn-secondary trigger">Delete Record</button>
 
       </form>
   </div>
-    <p id="output"></p>
+    <div class="modal">
+        <div class="modal-content">
+            <p>If you want to delete this vehicle from the fleet, please enter the word "DELETE"!</p>
+            <input type="text" id="deleteText" name="deleteText" style="width:50%;margin:auto">
+            <br>
+            <p style="margin: auto;">
+            <button type="button" class="btn btn-primary" style="width:80px;height:40px" name="closeButton" onclick="javascript: toggleDelModal();">Cancel</button>
+            <button type="button" class="btn btn-primary" style="width:80px;height:40px" name="deleteButton" id="confirmDel" disabled>Delete</button>
+            </p>
+        </div>
+    </div>
 </main>
 
 <footer>
@@ -66,6 +75,12 @@
 <script>
     let fleetArray = [];
     const output = document.getElementById("output");
+    const modalDel = document.querySelector(".modal");
+    const trigger = document.querySelector(".trigger");
+    const closeButton = document.querySelector(".close-button");
+    const delText = document.getElementById('deleteText');
+    const delBtn = document.getElementById('confirmDel');
+    document.getElementById('year').setAttribute('max', new Date().getFullYear() + 1);
 
     const updateFleetArray = async function () {
         if (fleetArray.length) {
@@ -85,6 +100,93 @@
         <% } %>
     };
     updateFleetArray();
+
+    var hasError = function (field) {
+
+        if (field.disabled || ['file', 'reset', 'submit', 'button'].includes(field.type)) return;
+
+        const validity = field.validity;
+
+        if (validity.valueMissing || /^[\s]+/.test(field.value)) return '* This field is required.';
+        if (validity.patternMismatch) return '* Only letters or numbers allowed. No spaces or other characters.';
+        if (validity.badInput) return '* Please enter a valid number';
+        if (validity.tooShort) return '* Entered data not long enough.';
+        if (validity.tooLong) return '* Entered data is too long';
+        if (field.type === 'number' && field.value.substring(0, 1) === '0') return '* Number cannot begin with 0.';
+        if (field.maxLength > 1 || field.minLength > 1) {
+            if (field.minLength > field.value.length) return `* Value entered isn't long enough`;
+            if (field.maxLength < field.value.length) return `* Value entered is too long`;
+        }
+        if (validity.rangeUnderflow) return `* Value is too low. Please enter a year between 1999 and ${new Date().getFullYear() + 1}.`;
+        if (validity.rangeOverflow) return `* Value is too high. Please enter a year between 1999 and ${new Date().getFullYear() + 1}.`;
+
+        return false;
+    };
+
+    var showError = function (field, error) {
+        // Add error class to field
+        field.classList.add('error');
+
+        // Get field id or name
+        var id = field.id || field.name;
+        if (!id) return;
+
+        // Check if error message field already exists
+        // If not, create one
+        var message = field.form.querySelector('.error-message#error-for-' + id);
+        if (!message) {
+            message = document.createElement('div');
+            message.className = 'error-message';
+            message.id = 'error-for-' + id;
+            field.parentNode.insertBefore(message, field.nextSibling);
+        }
+
+        // Add ARIA role to the field
+        field.setAttribute('aria-describedby', 'error-for-' + id);
+
+        // Update error message
+        message.innerHTML = error;
+
+        // Show error message
+        message.style.display = 'block';
+        message.style.visibility = 'visible';
+    };
+
+    var removeError = function (field) {
+
+        // Remove error class to field
+        field.classList.remove('error');
+
+        // Remove ARIA role from the field
+        field.removeAttribute('aria-describedby');
+
+        // Get field id or name
+        var id = field.id || field.name;
+        if (!id) return;
+
+        // Check if an error message is in the DOM
+        var message = field.form.querySelector('.error-message#error-for-' + id + '');
+        if (!message) return;
+
+        // If so, hide it
+        message.innerHTML = '';
+        message.style.display = 'none';
+        message.style.visibility = 'hidden';
+    };
+
+    document.addEventListener('blur', function (event) {
+
+        if (event.target && (!event.target.classList || !event.target.classList.contains('validate'))) return;
+
+        let error = hasError(event.target);
+        
+        if (error) {
+            showError(event.target, error);
+        } else {
+            removeError(event.target);
+        }
+
+    }, true);
 
     function populateDropdown() {
         let select = document.createElement("select");
@@ -109,10 +211,9 @@
 
         let selectOld = document.getElementById("vDropdown");
         if (selectOld) {
-            let oldValue = document.getElementById("vDropdown").value;
             const parentNode = selectOld.parentNode;
             parentNode.replaceChild(select, selectOld);
-            document.getElementById("vDropdown").value = oldValue;
+            document.getElementById("vDropdown").value = "addVehicle";
         } else {
             document.getElementById("vDropdownLbl").appendChild(select);
         }
@@ -155,38 +256,40 @@
             document.getElementById("statusLbl").appendChild(select);
         }
 
+        document.getElementById("vDropdown").addEventListener('change', function () {
+            output.innerHTML = "";
+            if (this.value !== 'addVehicle') {
+                let idx = fleetArray.findIndex((obj) => { return obj.stock_number === this.value });
+                const elementIds = document.getElementById('vForm').querySelectorAll("*[id]");
+                for (let i = 0; i < elementIds.length; i++) {
+                    if (elementIds[i].tagName !== 'SELECT' && elementIds[i].tagName !== 'LABEL' && elementIds[i].tagName !== 'OPTION') {
+                        document.getElementById(elementIds[i].id).value = fleetArray[idx][elementIds[i].id];
+                        document.getElementById(elementIds[i].id).setAttribute('readonly', true);
+                        document.getElementById(elementIds[i].id).style.backgroundColor = "#CCCCCC";
+                    } else if (elementIds[i].tagName === 'OPTION' && elementIds[i].value === fleetArray[idx].status) {
+                        document.getElementById("status").value = fleetArray[idx].status;
+                        document.getElementById("status").setAttribute('disabled', 'true');
+                        document.getElementById("status").style.backgroundColor = "#CCCCCC";
+                    }
+                }
+            } else {
+                const elementIds = document.getElementsByClassName("submitValue");
+                for (let i = 0; i < elementIds.length; i++) {
+                    if (elementIds[i].tagName !== 'SELECT') {
+                        document.getElementById(elementIds[i].id).value = null;
+                        document.getElementById(elementIds[i].id).style.backgroundColor = null;
+                        document.getElementById(elementIds[i].id).removeAttribute('readonly');
+                    } else {
+                        document.getElementById(elementIds[i].id).value = 'available';
+                        document.getElementById(elementIds[i].id).style.backgroundColor = null;
+                        document.getElementById("status").removeAttribute('disabled');
+                    }
+                }
+            }
+        });
     };
     populateDropdown();
 
-    document.getElementById("vDropdown").addEventListener('change', function () {
-        if (this.value !== 'addVehicle') {
-            let idx = fleetArray.findIndex((obj) => { return obj.stock_number === this.value });
-            const elementIds = document.getElementById('vForm').querySelectorAll("*[id]");
-            for (let i = 0; i < elementIds.length; i++) {
-                if (elementIds[i].tagName !== 'SELECT' && elementIds[i].tagName !== 'LABEL' && elementIds[i].tagName !== 'OPTION') {
-                    document.getElementById(elementIds[i].id).value = fleetArray[idx][elementIds[i].id];
-                    document.getElementById(elementIds[i].id).setAttribute('readonly', true);
-                    document.getElementById(elementIds[i].id).style.backgroundColor = "#CCCCCC";
-                } else if (elementIds[i].tagName === 'OPTION' && elementIds[i].value === fleetArray[idx].status) {
-                    document.getElementById("status").value = fleetArray[idx].status;
-                    document.getElementById("status").setAttribute('disabled', 'true');
-                    document.getElementById("status").style.backgroundColor = "#CCCCCC";
-                }
-            }
-        } else {
-            const elementIds = document.getElementsByClassName("submitValue");
-            for (let i = 0; i < elementIds.length; i++) {
-                if (elementIds[i].tagName !== 'SELECT') {
-                    document.getElementById(elementIds[i].id).value = null;
-                    document.getElementById(elementIds[i].id).style.backgroundColor = null;
-                } else {
-                    document.getElementById(elementIds[i].id).value = 'available';
-                    document.getElementById(elementIds[i].id).style.backgroundColor = null;
-                    document.getElementById("status").removeAttribute('disabled');
-                }
-            }
-        }
-    });
 
     const edtForm = async function () {
         const editForm = document.getElementById("vDropdown");
@@ -211,20 +314,17 @@
 
     const verifyInput = async function () {
         let dataValid = true;
-        const elementIds = document.getElementsByClassName("submitValue");
+        const elementIds = document.getElementsByClassName('validate');
         for (let i = 0; i < elementIds.length; i++) {
-            let elementId = document.getElementById(elementIds[i].id);
-            let elementValue = elementId.value.trim();
-            if (elementValue === '' || elementValue === null) {
-                elementId.style.backgroundColor = "#ff6666";
+            let error = hasError(elementIds[i]);
+
+            if (error) {
+                showError(elementIds[i], error);
                 dataValid = false;
             } else {
-                elementId.style.backgroundColor = null;
+                removeError(elementIds[i]);
             }
         }
-        if (!dataValid) {
-            alert("Please fill out all fields!");
-        } 
         return dataValid;
     };
 
@@ -248,23 +348,21 @@
 
             if (result.error) {
                 if (result.error == 'Update') {
-                    output.innerHTML = `<strong>ERROR: Unable to update current record, Reason: ${result.msg.routine}</strong>`;
+                    output.innerHTML = `<h3><strong>ERROR: Unable to update current record, Reason: ${result.msg.routine}</strong></h3>`;
                 } else if (result.error == 'Insert') {
-                    output.innerHTML = `<strong>ERROR: Unable to insert record ${result.stock_number}, Reason: ${result.msg.routine}</strong>`;
+                    output.innerHTML = `<h3><strong>ERROR: Unable to insert record ${result.stock_number}, Reason: ${result.msg.routine}</strong></h3>`;
                 } else {
-                    output.innerHTML = `<strong>ERROR: Unable to connect to database. Reason: ${result.msg.routine}</strong>`;
+                    output.innerHTML = `<h3><strong>ERROR: Unable to connect to database. Reason: ${result.msg.routine}</strong></h3>`;
                 }  
             } else {
                 if (result.status == 'Updated') {
-                    alert(`${result.stock_number} has been updated.`);
+                    output.innerHTML = `<h3><strong>${result.stock_number} has been updated.</strong></h3>`;
                 } else {
-                    alert(`${result.stock_number} has been added to the fleet.`);
+                    output.innerHTML = `<h3><strong>${result.stock_number} has been added to the fleet.</strong></h3>`;
                 }
-                location.reload();
-                //output.innerHTML = JSON.stringify(result, null, 6)
-                //    .replace(/\n( *)/g, function (match, p1) {
-                //        return '<br>' + '&nbsp;'.repeat(p1.length);
-                //    });
+                fleetArray = result.fleet;
+                populateDropdown();
+                document.getElementById('vForm').reset();
             } 
         } 
     };
@@ -272,7 +370,6 @@
     const delRecord = async function () {
         const dataValid = await verifyInput();
         if (dataValid) {
-            const confirmDel = confirm("Are you sure you want to delete this record?");
             if (confirmDel) {
                 const response = await fetch("/fleet", {
                     method: "POST",
@@ -285,16 +382,48 @@
                 const result = await response.json();
 
                 if (result.error) {
-                    output.innerHTML = `<strong>ERROR: Unable to delete record ${result.stock_number} from the database. Reason: ${result.msg.routine}</strong>`;
+                    output.innerHTML = `<h3><strong>ERROR: Unable to delete record ${result.stock_number} from the database. Reason: ${result.msg.routine}</strong></h3>`;
                 } else if (result.status == 'Deleted') {
-                    alert(`Record ${result.stock_number} has been deleted!`);
-                    location.reload();
+                    output.innerHTML = `<h3><strong>Record ${result.stock_number} has been deleted.</strong></h3>`;
+                    document.getElementById('vForm').reset();
                 } else {
-                    output.innerHTML = `<strong>ERROR: Record ${result.stock_number} does not exist.</strong>`;
+                    output.innerHTML = `<h3><strong>ERROR: Record ${result.stock_number} does not exist.</strong></h3>`;
                 }
+                fleetArray = result.fleet;
+                populateDropdown();
             }
         }
     };
+
+    /* Delete Modal functions */
+    function toggleDelModal() {
+        modalDel.classList.toggle("show-modal");
+        if (!modalDel.classList.contains('show-modal')) {
+            delText.value = "";
+        }
+    }
+
+    function windowOnClick(event) {
+        if (event.target === modalDel) {
+            toggleDelModal();
+        }
+    }
+
+    trigger.addEventListener("click", toggleDelModal);
+    window.addEventListener("click", windowOnClick);
+    delText.addEventListener("input", function() {
+        if (this.value === 'DELETE') {
+            delBtn.removeAttribute('disabled');
+        } else {
+            delBtn.setAttribute('disabled', true);
+        }
+    });
+
+    delBtn.addEventListener("click", function() {
+        delRecord();
+        toggleDelModal();
+    });
+    /* End of Modal functions */
 
     function AvoidSpace(event) {
         var k = event ? event.which : window.event.keyCode;

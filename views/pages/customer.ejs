@@ -13,9 +13,7 @@
   <div class="jumbotron">
     <h1>Customer Page</h1>
     <p>Search or Add Customers.</p>
-    <p id="infoMessage">- Updating customer information is currently not implemented. This will be
-      implemented in a future release.
-    </p>
+    <p id="infoMessage"></p>
   </div>
   <p id="output"></p>
   <div class="row">
@@ -44,83 +42,83 @@
     <div class="cForm right">
       <form id="cForm">
         <fieldset>
-          <legend>Enter Customer Information</legend>
+          <legend id="custInfoHeader">Enter New Customer Information</legend>
           <div class="form-group">
             <div class="col-9">
               <label for="fName">First Name</label>
-              <input type="text" id="fName" class="form-control addValue" name="f_name" value="" required>
+              <input type="text" id="fName" class="form-control addValue validate" name="f_name" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="lName">Last Name</label>
-              <input type="text" id="lName" class="form-control addValue" name="l_name" value="" required>
+              <input type="text" id="lName" class="form-control addValue validate" name="l_name" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="pNumber">Phone Number</label>
-              <input type="text" id="pNumber" class="form-control addValue" name="phone" onkeypress="return AvoidSpace(event)" value="" required>
+              <input type="tel" id="pNumber" class="form-control addValue validate" name="phone" pattern="[0-9]{10}" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="address">Address</label>
-              <input type="text" id="address" class="form-control addValue" name="address" value="" required>
+              <input type="text" id="address" class="form-control addValue validate" name="address" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="city">City</label>
-              <input type="text" id="city" class="form-control addValue" name="city" value="" required>
+              <input type="text" id="city" class="form-control addValue validate" name="city" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="state">State</label>
-              <input type="text" id="state" class="form-control addValue" name="state" maxlength="2" size="2" onkeypress="return AvoidSpace(event)" value="" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').replace(/(.*)/g, '$1')" required>
+              <input type="text" id="state" class="form-control addValue validate" name="state" maxlength="2" size="2" onkeypress="return AvoidSpace(event)" value="" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').replace(/(.*)/g, '$1')" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="zCode">Zip Code</label>
-              <input type="text" id="zCode" class="form-control addValue" name="zip_code" maxlength="5" size="5" onkeypress="return AvoidSpace(event)" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.*)/g, '$1').replaceAll(/^0+/g, '')" value="" required>
+              <input type="number" id="zCode" class="form-control addValue validate" name="zip_code" minLength="5" maxLength="5" size="5" min="1" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="bDay">Birthday</label>
-              <input type="date" id="bDay" class="form-control addValue" name="birthday" value="" required>
+              <input type="date" id="bDay" class="form-control addValue validate" name="birthday" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="lNumber">License Number</label>
-              <input type="text" id="lNumber" class="form-control addValue" name="license_num" onkeypress="return AvoidSpace(event)" value="" required>
+              <input type="text" id="lNumber" class="form-control addValue validate" name="license_num" onkeypress="return AvoidSpace(event)" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="licExp">License Expiration</label>
-              <input type="date" id="licExp" class="form-control addValue" name="license_exp" value="" required>
+              <input type="date" id="licExp" class="form-control addValue validate" name="license_exp" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="insName">Insurance Name</label>
-              <input type="text" id="insName" class="form-control addValue" name="ins_name" value="" required>
+              <input type="text" id="insName" class="form-control addValue validate" name="ins_name" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="insPolicy">Insurance Policy Number</label>
-              <input type="text" id="insPolicy" class="form-control addValue" name="ins_policy" value="" required>
+              <input type="text" id="insPolicy" class="form-control addValue validate" name="ins_policy" value="" required>
             </div>
           </div>
           <div class="form-group">
             <div class="col-9">
               <label for="insExp">Insurance Expiration Date</label>
-              <input type="date" id="insExp" class="form-control addValue" name="ins_exp" value="" required>
+              <input type="date" id="insExp" class="form-control addValue validate" name="ins_exp" value="" required>
             </div>
           </div>
           
@@ -136,23 +134,108 @@
   output.style.color = "#F00"
   let custId = 0;
 
+  var hasError = function (field) {
+    if (field.disabled || ['file', 'reset', 'submit', 'button'].includes(field.type)) return;
+    let currentDate = new Date();
+    currentDate.setHours(0,0,0,0);
+    const minAge = new Date(currentDate.getFullYear() - 25, currentDate.getMonth(), currentDate.getDate());
+    const validity = field.validity;
+
+    if (validity.valueMissing || /^[\s]+/.test(field.value)) return '* This field is required.';
+    if (field.type === 'text' && validity.patternMismatch) return '* Only letters or numbers allowed. No spaces or other characters.';
+    if (field.type === 'tel' && validity.patternMismatch) return '* Only numbers are allowed. Must be 10 digits.'
+    if (field.type === 'tel' && field.value.substring(0, 1) === '0') return '* Phone number must not begin with 0.'
+    if (validity.badInput) return '* Please enter a valid number';
+    if (validity.tooShort) return '* Entered data not long enough.';
+    if (validity.tooLong) return '* Entered data is too long';
+    if (field.maxLength > 1 || field.minLength > 1) {
+        if (field.minLength > field.value.length) return `* Value entered isn't long enough`;
+        if (field.maxLength < field.value.length) return `* Value entered is too long`;
+    }
+    if (field.id === 'bDay' && new Date(field.value) > minAge) return `* Customer is younger than 25.`;
+    if (field.type === 'date' && field.id !== 'bDay' && new Date(field.value) < currentDate) return `* Expired Date.`;
+
+    return false;
+  };
+
+  var showError = function (field, error) {
+    // Add error class to field
+    field.classList.add('error');
+
+    // Get field id or name
+    var id = field.id || field.name;
+    if (!id) return;
+
+    // Check if error message field already exists
+    // If not, create one
+    var message = field.form.querySelector('.error-message#error-for-' + id);
+    if (!message) {
+        message = document.createElement('div');
+        message.className = 'error-message';
+        message.id = 'error-for-' + id;
+        field.parentNode.insertBefore(message, field.nextSibling);
+    }
+
+    // Add ARIA role to the field
+    field.setAttribute('aria-describedby', 'error-for-' + id);
+
+    // Update error message
+    message.innerHTML = error;
+
+    // Show error message
+    message.style.display = 'block';
+    message.style.visibility = 'visible';
+  };
+
+  var removeError = function (field) {
+
+    // Remove error class to field
+    field.classList.remove('error');
+
+    // Remove ARIA role from the field
+    field.removeAttribute('aria-describedby');
+
+    // Get field id or name
+    var id = field.id || field.name;
+    if (!id) return;
+
+    // Check if an error message is in the DOM
+    var message = field.form.querySelector('.error-message#error-for-' + id + '');
+    if (!message) return;
+
+    // If so, hide it
+    message.innerHTML = '';
+    message.style.display = 'none';
+    message.style.visibility = 'hidden';
+  };
+
+  document.addEventListener('blur', function (event) {
+
+    if (event.target && (!event.target.classList || !event.target.classList.contains('validate'))) return;
+
+    let error = hasError(event.target);
+
+    if (error) {
+        showError(event.target, error);
+    } else {
+        removeError(event.target);
+    }
+
+  }, true);
+
   const verifyInput = async function () {
     output.innerHTML = "";
     let dataValid = true;
-    const elementIds = document.getElementsByClassName("addValue");
+    const elementIds = document.getElementsByClassName('validate');
     for (let i = 0; i < elementIds.length; i++) {
-      let elementId = document.getElementById(elementIds[i].id);
-      let elementValue = elementId.value.trim();
-      if (elementValue === '' || elementValue === null) {
-        elementId.style.backgroundColor = "#ff6666";
-        dataValid = false;
-      } else {
-        elementId.style.backgroundColor = null;
-      }
+        let error = hasError(elementIds[i]);
+        if (error) {
+            showError(elementIds[i], error);
+            dataValid = false;
+        } else {
+            removeError(elementIds[i]);
+        }
     }
-    if (!dataValid) {
-      output.innerHTML = "Please fill out all fields!";
-    } 
     return dataValid;
   };
 
@@ -234,9 +317,14 @@
         if (updateBtn) updateBtn.parentNode.removeChild(updateBtn);
         const cancelBtn = document.getElementById('cancelBtn');
         if (cancelBtn) cancelBtn.parentNode.removeChild(cancelBtn);
+        document.getElementById('custInfoHeader').innerHTML = 'Customer Information';
       }
     } else {
       output.innerHTML = "<h4>Error: Customer wasn't selected. Please select a Customer or Add a new customer.</h4>";
+    }
+    const elementIds = document.getElementsByClassName('validate');
+    for (let i = 0; i < elementIds.length; i++) {
+      removeError(elementIds[i]);
     }
   };
 
@@ -263,6 +351,7 @@
     cancelBtn.setAttribute('onclick', `javascript: loadCust(custId);`);
     cancelBtn.innerHTML = "Cancel";
     custForm.appendChild(cancelBtn);
+    document.getElementById('custInfoHeader').innerHTML = 'Edit Exisitng Customer Information';
   };
 
   const updateCust = async () => {
@@ -292,21 +381,23 @@
       } else {
         output.innerHTML = `<h4>Update to customer was not made.</h4>`;
       }
+      const updateBtnRemove = document.getElementById('updateBtn');
+      updateBtnRemove.parentNode.removeChild(updateBtnRemove);
+      const cancelBtn = document.getElementById('cancelBtn');
+      cancelBtn.parentNode.removeChild(cancelBtn);
+      const addBtn = document.createElement('button');
+      addBtn.type = "button";
+      addBtn.id = "addBtn";
+      addBtn.className = "btn btn-primary";
+      addBtn.innerHTML = "Add";
+      addBtn.setAttribute('onclick', 'javascript: addUser();');
+      document.getElementById('cForm').appendChild(addBtn);
+      document.getElementById('cForm').reset();
+      document.getElementById('listbox').innerHTML = '';
+      document.getElementById('custInfoHeader').innerHTML = 'Enter New Customer Information';
+      custId = 0; // Reset search ID
     }
-    const updateBtnRemove = document.getElementById('updateBtn');
-    updateBtnRemove.parentNode.removeChild(updateBtnRemove);
-    const cancelBtn = document.getElementById('cancelBtn');
-    cancelBtn.parentNode.removeChild(cancelBtn);
-    const addBtn = document.createElement('button');
-    addBtn.type = "button";
-    addBtn.id = "addBtn";
-    addBtn.className = "btn btn-primary";
-    addBtn.innerHTML = "Add";
-    addBtn.setAttribute('onclick', 'javascript: addUser();');
-    document.getElementById('cForm').appendChild(addBtn);
-    document.getElementById('cForm').reset();
-    document.getElementById('listbox').innerHTML = '';
-    custId = 0; // Reset search ID
+    
   };
 
   const searchCust = async () => {
@@ -314,7 +405,7 @@
     listbox.innerHTML = "";
     output.innerHTML = "";
     const bodyObj = {};
-    const elementIds = document.getElementsByClassName("form-control");
+    const elementIds = document.getElementsByClassName("searchValue");
       for (let i = 0; i < elementIds.length; i++) {
         Object.assign(bodyObj, { [elementIds[i].name]: elementIds[i].value });
     }

@@ -29,10 +29,11 @@ startupDataLoad = async function() {
         fleet = (await client.query(vehicleSelectQry)).rows;
         app.locals.fleet = fleet;
         client.release();
+        return fleet;
     } catch (err) {
         console.log(err);
     }
-}
+};
 startupDataLoad();
 
 startTest = async function () {
