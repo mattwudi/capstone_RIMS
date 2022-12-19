@@ -34,7 +34,11 @@ dataLoad = async function() {
 // GET reopen page
 router.get('/', async function(req, res, next) {
   await dataLoad();
-  res.render('pages/reopen', {title: 'Reopen', 'closedAgreements': closedAgreements})
+  if(req.isAuthenticated()){
+    res.render('pages/reopen', {title: 'Reopen', 'closedAgreements': closedAgreements})
+  } else {
+    res.render('pages/login');
+  }
 }).post('/', async(req, res) => {
   res.set({
     "Content-Type": "application/json"

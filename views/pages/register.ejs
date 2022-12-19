@@ -5,10 +5,6 @@
 </head>
 <body class="container">
 
-<header>
-  <%- include('../partials/header'); %>
-</header>
-
 <main>
   <div class="jumbotron">
     <h1>Registration</h1>
@@ -43,6 +39,8 @@
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" class="form-control col-5" id="password" name="password" placeholder="Enter Password" required>
+        <br>
+        <small style="color:red">Please enter a minimum of 6 characters.</small>
       </div>
 
       <br>
