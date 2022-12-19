@@ -18,7 +18,11 @@ router.get('/', async (req, res) => {
             jsonForm: formJson
 
         }
-        res.render('pages/printagreement', args);
+        if(req.isAuthenticated()){
+            res.render('pages/printagreement', args);
+          } else {
+            res.render('pages/login');
+          }
     } catch (err) {
         console.error(err);
         res.set({
