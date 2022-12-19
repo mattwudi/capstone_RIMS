@@ -12,57 +12,59 @@
 <main>
   <div class="jumbotron">
     <h1>Welcome to RIMS</h1>
-    <p>This is our home page</p>
-  </div>
-  <p id="output"></p>
-</main>
-  <div>
-    <h2>Vehicles</h2>
-    <!--Availability dropdown-->
+    <p>View vehicle inventory and status below</p>
+    <p id="output"></p>
+
     <div>
-      <label>Vehicle availability</label>
-      <select id="availabilityDropdown" oninput="statusFilter()">
-        <option>Any</option>
-        <option>Available</option> <!--Changed to upper case in database since it's written like that-->
-        <option>Loaned Out</option>
-        <option>Repairing</option>
-        <option>Decommissioned</option>
-      </select>
-    </div>
-    <div>
-      <table id = "vehicleTable" border="1px solid black">
-        <tr>
-          <th>Stock Number</th>
-          <th>Year</th>
-          <th>Make</th>
-          <th>Model</th>
-          <th>Color</th>
-          <th>VIN</th>
-          <th>Mileage</th>
-          <th>Status</th>
-        </tr>
-         <% vehicles.forEach(function(v) { %>
+      <h2>Vehicles</h2>
+      <!--Availability dropdown-->
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="availabilityDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Vehicle Availability
+        </button>
+        <div class="dropdown-menu" aria-labelledby="availabilityDropdown">
+          <button class="dropdown-item" type="button" onclick="statusFilter('Any')">Any</button>
+          <button class="dropdown-item" type="button" onclick="statusFilter('Available')">Available</button>
+          <button class="dropdown-item" type="button" onclick="statusFilter('Loaned Out')">Loaned Out</button>
+          <button class="dropdown-item" type="button" onclick="statusFilter('Repairing')">Repairing</button>
+          <button class="dropdown-item" type="button" onclick="statusFilter('Decommissioned')">Decommissioned</button>
+        </div>
+      </div>
+      <div>
+        <table id = "vehicleTable" class="table table-striped">
           <tr>
-            <td><%= v.stock_number %></td>
-            <td><%= v.year %></td>
-            <td><%= v.make %></td>
-            <td><%= v.model %></td>
-            <td><%= v.color %></td>
-            <td><%= v.vin %></td>
-            <td><%= v.mileage %></td>
-            <td><%= v.status %></td>
+            <th>Stock Number</th>
+            <th>Year</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Color</th>
+            <th>VIN</th>
+            <th>Mileage</th>
+            <th>Status</th>
           </tr>
-      <% }); %> 
-      </table>
+          <% vehicles.forEach(function(v) { %>
+            <tr>
+              <td><%= v.stock_number %></td>
+              <td><%= v.year %></td>
+              <td><%= v.make %></td>
+              <td><%= v.model %></td>
+              <td><%= v.color %></td>
+              <td><%= v.vin %></td>
+              <td><%= v.mileage %></td>
+              <td><%= v.status %></td>
+            </tr>
+        <% }); %> 
+        </table>
+      </div>
+      <br>
+      <!--Button to vehicle report-->
+      <button id="vReportButton" class="btn btn-primary">Vehicle Report</button>
     </div>
-    <br>
-    <!--Button to vehicle report-->
-    <button id="vReportButton">Vehicle Report</button>
-    <br>
-    <br>
-    <h2>Most recent rentals</h2>
+  </div>
+  <div>
+    <h2>Recent Rentals</h2>
     <div>
-      <table id="recentRentalTable" border="1px solid black">
+      <table id="recentRentalTable" class="table table-striped">
         <tr>
           <th>Stock Number</th>
           <th>Year</th>
@@ -95,27 +97,27 @@
     </div>
   </div>
 </main>
+  
+</main>
 <script type ="text/javascript">
   //Link button to vehicle report
   document.getElementById("vReportButton").onclick = function() {
     location.href = "vehiclereport";
   };
   //Dropdown function to sort table
-  function statusFilter() {
-  let input, table, tr, filter, td, status;
-  input = document.getElementById("availabilityDropdown");
-  table = document.getElementById("vehicleTable");
-  tr = table.getElementsByTagName("tr");
-  filter = input.value;
+  function statusFilter(filter) {
+    let table, tr, td, status;
+    table = document.getElementById("vehicleTable");
+    tr = table.getElementsByTagName("tr");
 
-  for (let row of tr) {
-    td = row.getElementsByTagName("td");
-    status = td[7] || null;
-    if (filter === "Any" || !status || (filter === status.textContent)) {
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
+    for (let row of tr) {
+      td = row.getElementsByTagName("td");
+      status = td[7] || null;
+      if (filter === "Any" || !status || (filter === status.textContent)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
     }       
   };
 </script>

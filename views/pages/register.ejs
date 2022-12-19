@@ -11,8 +11,8 @@
 
 <main>
   <div class="jumbotron">
-    <h1>Welcome to RIMS</h1>
-    <p>Registration</p>
+    <h1>Registration</h1>
+    <p>Fill out the form below to register</p>
   </div>
 
   <div>
@@ -26,32 +26,36 @@
   <div>
     <form action="/register" method="POST">
 
-      <div>
-        <input type="text" id="name" name="name" placeholder="Name" required>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control col-5" id="name" name="name" placeholder="Enter Name" required>
+      </div>
+
+      <br>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control col-5" id="email" name="email" placeholder="Enter Email" required>
+      </div>
+
+      <br>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control col-5" id="password" name="password" placeholder="Enter Password" required>
+      </div>
+
+      <br>
+
+      <div class="form-group">
+        <label for="password2">Confirm Password</label>
+        <input type="password" class="form-control col-5" id="password2" name="password2" placeholder="Confirm Password" required>
       </div>
 
       <br>
 
       <div>
-        <input type="email" id="email" name="email" placeholder="Email" required>
-      </div>
-
-      <br>
-
-      <div>
-        <input type="password" id="password" name="password" placeholder="Password" required>
-      </div>
-
-      <br>
-
-      <div>
-        <input type="password" id="password2" name="password2" placeholder="Confirm Password" required>
-      </div>
-
-      <br>
-
-      <div>
-        <input type="submit" value = "Register">
+        <input type="submit" class="btn btn-primary" value = "Register">
       </div>
 
       <br>
