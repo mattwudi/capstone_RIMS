@@ -11,58 +11,90 @@
 
 <main>
   <div class="jumbotron">
-    <p>
-      This page allows you to return loaned out vehicles, as well as reopen closed agreements. At the current moment you can only properly select a vehicle by stock number.
-      If you are wanting to reopen a closed agreement, you simply need to select the stock number of the vehicle in question. The grey 'Reopen' button below will become active
-      if it is valid to reopen the agreement. Upon submitting the request, you will receive confirmation that the agreement was reopened.
-    </p>
-    <h1 id="heading">Return Agreement</h1>
+    <h1 id="heading">Reopen Agreement</h1>
     <form>
       <div class="form-group row">
-        <label for="stock_number" id="stock_numberLbl" class="col-sm-3 col-form-label">Stock Number</label>
-
-        <select name="stock_number" id="stock_number" class="form-control col-sm-4">
-          <option value="choose">Select a vehicle</option>
+        <label for="agreement" class="col-sm-3 col-form-label">Agreement Number</label>
+        <select id="agreement" name="agreement" class="form-control col-sm-4">
+          <option value="default">Select an agreement to reopen</option>
         </select>
-        <!-- <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" placeholder="Enter Stock Number..."> -->
       </div>
       <div class="form-group row">
-        <label for="agreement" class="col-sm-3 col-form-label">Agreement Number</label>
-        <input type="text" id="agreement" name="agreement" class="form-control col-sm-4" placeholder="Enter Agreement Number...">
+        <label for="stock_number" id="stock_numberLbl" class="col-sm-3 col-form-label">Stock Number</label>
+        <input type="text" id="stock_number" name="stock_number" class="form-control col-sm-4" disabled>
       </div>
+      
       <div class="form-group row">
         <label for="customer" class="col-sm-3 col-form-label">Customer Name</label>
         <input type="text" id="customer" name="customer" class="form-control col-sm-4" disabled>
       </div>
-      <div class="form-group row">
-        <label for="mileage_out" class="col-sm-3 col-form-label">Outgoing Mileage</label>
-        <input type="number" id="mileage_out" name="mileage_out" class="form-control col-sm-4" disabled>
-      </div>
-      <div class="form-group row">
-        <label for="mileage_in" class="col-sm-3 col-form-label">Return Mileage</label>
-        <input type="number" id="mileage_in" name="mileage_in" class="form-control col-sm-4" disabled>
-      </div>
-      <div class="form-group row">
-        <label for="miles_driven" class="col-sm-3 col-form-label">Miles Driven</label>
-        <input type="number" id="miles_driven" name="miles_driven" class="form-control col-sm-4" disabled>
-      </div>
-      <div class="form-group row">
-        <label for="status" class="col-sm-3 col-form-label">Set Status to</label>
-        <select name="status" id="status" class="form-control col-sm-4" disabled>
-          <option value="Available">Available</option>
-          <option value="Decommissioned">Decommissioned</option>
-          <option value="Repairing">Repairing</option>
-        </select>
-      </div>      
-
-      <button type="button" id="save" name="save" class="btn btn-primary mb-2" onclick="javascript:send('save');">Save</button>
-      <button type="button" id="reopen" name="reopen" class="btn btn-secondary mb-2" onclick="javascript:send('reopen')"; disabled>Reopen</button>
+      <button type="button" id="reopen" name="reopen" class="btn btn-secondary mb-2" onclick="javascript:send()"; disabled>Reopen</button>
     </form>
     
   </div>
   <p id="output"></p>
 </main>
+<script>
+let agreementArray = [];
 
+<% for (let i = 0; i < closedAgreements.length; i++) { %>
+  agreementArray.push({
+    'agreement_num': <%= closedAgreements[i].agreement_num %>,
+    'stock_number': "<%= closedAgreements[i].stock_number %>",
+    'first_name': "<%= closedAgreements[i].f_name %>",
+    'last_name': "<%= closedAgreements[i].l_name %>"
+  });
+<% } %>
+
+function agreementDropdown() {
+  select = document.getElementById('agreement');
+
+  agreementArray.forEach(function (aa) {
+    option = document.createElement('option');
+    option.value = aa.agreement_num;
+    option.id = `${agreementArray.findIndex((obj) => { return obj.agreement_num === aa.agreement_num})}`;
+    option.text = aa.agreement_num;
+    select.appendChild(option);
+  });
+}
+
+agreementDropdown();
+
+document.getElementById('agreement').addEventListener('change', function () {
+    if (this.value !== 'default') {
+      let idx = agreementArray.findIndex((obj) => {return obj.agreement_num === Number(this.value)});
+      document.getElementById('stock_number').value = agreementArray[idx].stock_number;
+      document.getElementById('customer').value = agreementArray[idx].first_name + " " + agreementArray[idx].last_name;
+      document.getElementById('reopen').disabled = false;
+      document.getElementById('reopen').style.backgroundColor = '#007bff';
+      document.getElementById('reopen').style.borderColor = '#007bff';
+    }
+  });
+
+  const output = document.getElementById('output');
+  const send = async function() {
+    const response = await fetch("/reopen", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        agreement_num: document.getElementById('agreement').value,
+        stock_number: document.getElementById('stock_number').value
+      })
+    });
+    const result = await response.json();
+
+    if (result.error) {
+      output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
+    } else {
+      output.innerHTML = result.message;
+    }
+
+  }
+
+</script>
 
 <footer>
   <%- include('../partials/footer'); %>

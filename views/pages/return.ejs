@@ -118,9 +118,6 @@
   var idx;
   var fidx;
 
-  elementArray.push(document.getElementById('stock_number'), document.getElementById('agreement'));
-  console.log(agreementArray);
-  console.log(fleetArray);
   
   document.getElementById('stock_number').addEventListener('change', function () {
     if (this.value !== 'choose') {
@@ -132,56 +129,7 @@
       document.getElementById('status').disabled = false;
     }
   });
-/*
-  elementArray.forEach(function(e) {
-    e.addEventListener('change', function() {
-      if (this.value !== 'choose') {
-        if (e === document.getElementById('stock_number')) {
-          idx = agreementArray.findIndex((obj) => {return obj.stock_number === this.value});
-          fidx = fleetArray.findIndex((obj) => {return obj.stock_number === this.value});
-          
-        } else if (e === document.getElementById('agreement')) {
-          idx = agreementArray.findIndex((obj) => {return obj.agreement_num === Number(this.value)});
-          fidx = agreementArray.findIndex((obj) => {
-            console.log(obj);
-            if (Number(this.value) === obj.agreement_num){
-              return obj.stock_number
-            }
-          });
-        }
 
-        console.log(fleetArray[fidx]);
-        console.log(fleetArray[fidx].status);
-
-        if (fleetArray[fidx].status == 'Loaned Out') {
-          document.getElementById('heading').innerHTML = 'Return Agreement';
-          document.getElementById('mileage_in').disabled = false;
-          document.getElementById('status').disabled = false;
-          document.getElementById('reopen').disabled = true;
-          document.getElementById('save').disabled = false;
-          document.getElementById('save').style.backgroundColor = '#007bff';
-          document.getElementById('save').style.borderColor = '#007bff';
-          document.getElementById('reopen').style.backgroundColor = '#6c757d';
-          document.getElementById('reopen').style.borderColor = '#6c757d';
-        } else {
-          document.getElementById('heading').innerHTML = 'Reopen Agreement';
-          document.getElementById('reopen').disabled = false;
-          document.getElementById('reopen').style.backgroundColor = '#007bff';
-          document.getElementById('reopen').style.borderColor = '#007bff';
-          document.getElementById('save').disabled = true;
-          document.getElementById('save').style.backgroundColor = '#6c757d';
-          document.getElementById('save').style.borderColor = '#6c757d';
-        }
-      
-        document.getElementById('stock_number').value = agreementArray[idx].stock_number;
-        document.getElementById('agreement').value = agreementArray[idx].agreement_num;
-        document.getElementById('mileage_out').value = agreementArray[idx].mileage_out;
-        document.getElementById('customer').value = agreementArray[idx].first_name + " " + agreementArray[idx].last_name;
-        
-      }
-    });
-  });
-*/
   document.getElementById('mileage_in').addEventListener('change', function() {
 
     let mileage_in = Number(document.getElementById('mileage_in').value);
@@ -217,7 +165,6 @@
     if (result.error) {
       output.innerHTML = `<strong>ERROR: ${result.error.routine}</strong>`;
     } else {
-      console.log(result);
       output.innerHTML = result.message;
     }
   }

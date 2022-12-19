@@ -11,16 +11,21 @@ const pool = new Pool({
   }
 });
 
-const availableSql = "SELECT stock_number FROM vehicles WHERE status = 'Available';";
-var reopenSql;
+const closedAgreementsSql = `SELECT DISTINCT ON (stock_number) agreement_num, cust_id, stock_number, f_name, l_name, stock_number
+  FROM agreements 
+  INNER JOIN customers ON customers.id = agreements.cust_id
+  WHERE date_in IS NOT NULL
+  ORDER BY stock_number, agreement_num DESC;`;
+
+var closedAgreements;
 
 dataLoad = async function() {
   try {
     const client = await pool.connect();
 
-    stockNumbers = (await client.query(availableSql)).rows;
+    closedAgreements = (await client.query(closedAgreementsSql)).rows;
 
-    console.log(stockNumbers);
+    client.release();
   } catch (err) {
     console.log(err);
   }
@@ -30,7 +35,7 @@ dataLoad = async function() {
 router.get('/', async function(req, res, next) {
   await dataLoad();
   if(req.isAuthenticated()){
-    res.render('pages/reopen', {title: 'Reopen'})
+    res.render('pages/reopen', {title: 'Reopen', 'closedAgreements': closedAgreements})
   } else {
     res.render('pages/login');
   }
@@ -38,7 +43,31 @@ router.get('/', async function(req, res, next) {
   res.set({
     "Content-Type": "application/json"
   });
+  try {
+    const client = await pool.connect();
+    const agreement_num  = req.body.agreement_num;
+    const stock_number = req.body.stock_number;
 
+    let args = {};
+
+    const reopenSql = `UPDATE agreements SET date_in = NULL, mileage_in = NULL WHERE agreement_num = '${agreement_num}';`
+    const updateStatusSql = `UPDATE vehicles SET status = 'Loaned Out' WHERE stock_number = '${stock_number}';`;
+
+    const reopenAgreement = await client.query(reopenSql);
+    updateStatus = await client.query(updateStatusSql);
+
+    args.message = `Agreement ${agreement_num} was succesfully reopened.`;
+
+    const response = args;
+
+    res.json(response);
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.json({
+      error: err
+    });
+  }
 
 });
 

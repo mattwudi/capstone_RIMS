@@ -71,7 +71,6 @@ router.get('/', async function(req, res, next) {
     let newCust = {};
 
     if (!custId.rows[0]) {
-      console.log('this should create a new customer');
       const newCustSql = `INSERT INTO customers (f_name, l_name, phone, address, city, state, zip_code, birthday, license_num, license_exp, ins_name, ins_policy, ins_exp)
         VALUES ('${f_name}', '${l_name}', '${phone}', '${address}', '${city}', '${state}', '${zip}', '${birthday}', '${license_num}', '${license_exp}', '${ins_name}', '${ins_policy}', '${ins_exp}');`;
       
