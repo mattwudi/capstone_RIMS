@@ -48,7 +48,7 @@
           <button class="dropdown-item" type="button" onclick="statusFilter('Decommissioned')">Decommissioned</button>
         </div>
       </div>
-      <div>
+      <div class="table-responsive">
         <table id = "vehicleTable" class="table table-striped">
           <tr>
             <th>Stock Number</th>
@@ -78,40 +78,42 @@
       <!--Button to vehicle report-->
       <button id="vReportButton" class="btn btn-primary">Vehicle Report</button>
     </div>
-  </div>
-  <div>
-    <h2>Recent Rentals</h2>
+    <br>
+    <br>
     <div>
-      <table id="recentRentalTable" class="table table-striped">
-        <tr>
-          <th>Stock Number</th>
-          <th>Year</th>
-          <th>Make</th>
-          <th>Model</th>
-          <th>Color</th>
-          <th>VIN</th>
-          <th>Mileage</th>
-          <th>Customer ID</th>
-          <th>Customer First Name</th>
-          <th>Customer Last Name</th>
-          <th>Date Out</th>
-        </tr>
-        <% recentRentals.forEach(function(r) { %>
-        <tr>
-          <td><%= r.stock_number %></td>
-          <td><%= r.year %></td>
-          <td><%= r.make %></td>
-          <td><%= r.model %></td>
-          <td><%= r.color %></td>
-          <td><%= r.vin %></td>
-          <td><%= r.mileage %></td>
-          <td><%= r.id %></td>
-          <td><%= r.f_name %></td>
-          <td><%= r.l_name %></td>
-          <td><%= r.date_out %></td>
-        </tr>
-        <% }); %>
-      </table>
+      <h2>Recent Rentals</h2>
+      <div class="table-responsive">
+        <table id="recentRentalTable" class="table table-striped">
+          <tr>
+            <th>Stock Number</th>
+            <th>Year</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Color</th>
+            <th>VIN</th>
+            <th>Mileage</th>
+            <th>Customer ID</th>
+            <th>Customer First Name</th>
+            <th>Customer Last Name</th>
+            <th>Date Out</th>
+          </tr>
+          <% recentRentals.forEach(function(r) { %>
+          <tr>
+            <td><%= r.stock_number %></td>
+            <td><%= r.year %></td>
+            <td><%= r.make %></td>
+            <td><%= r.model %></td>
+            <td><%= r.color %></td>
+            <td><%= r.vin %></td>
+            <td><%= r.mileage %></td>
+            <td><%= r.id %></td>
+            <td><%= r.f_name %></td>
+            <td><%= r.l_name %></td>
+            <td><%= r.date_out.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})  %></td>
+          </tr>
+          <% }); %>
+        </table>
+      </div>
     </div>
   </div>
 </main>
